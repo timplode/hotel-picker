@@ -1,0 +1,53 @@
+{
+  "kind": "collectionType",
+  "collectionName": "conference_groups",
+  "info": {
+    "singularName": "conference-group",
+    "pluralName": "conference-groups",
+    "displayName": "ConferenceGroup"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "longName": {
+      "type": "string"
+    },
+    "conference": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::conference.conference",
+      "inversedBy": "conference_groups"
+    },
+    "emailVisibility": {
+      "type": "boolean",
+      "default": false
+    },
+    "lastResetSentAt": {
+      "type": "datetime"
+    },
+    "lastVerificationSentAt": {
+      "type": "datetime"
+    },
+    "allowLoginsAfterDateTime": {
+      "type": "datetime",
+      "required": true
+    },
+    "tokenKey": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "verified": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    }
+  }
+}

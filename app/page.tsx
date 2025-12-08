@@ -3,10 +3,35 @@
 import { useState, useEffect } from "react";
 import { isPasscode } from "../lib/validate";
 import { filterPasscode } from "../lib/filter";
+import { Conference, ConferenceResponse } from "./types/conference";
+import RegistrationStart from "./registration/RegistrationStart";
+import {
+  Box,
+  Container,
+  Typography,
+  TextField,
+  Link,
+  Alert,
+  CircularProgress
+} from '@mui/material';
 
 export default function Home() {
   const [passcode, setPasscode] = useState("");
   const [isValid, setIsValid] = useState(true);
+  const [conference, setConference] = useState<Conference | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const formatDateToISO8601Local = (dateString: string) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    // Convert to local timezone and format as ISO8601 without timezone info
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return date.toLocaleDateString('en-CA'); // YYYY-MM-DD format
+    return `${year}-${month}-${day}`;
+  };
 
   useEffect(() => {
     // Check for passcode in URL parameters
@@ -22,92 +47,165 @@ export default function Home() {
       // Validate the passcode
       const valid = isPasscode(filteredValue);
       setIsValid(valid);
+      
+      // If passcode is valid, fetch conference data
+      if (valid) {
+        fetchConference(filteredValue);
+      }
     }
   }, []);
+
+  const fetchConference = async (passcodeValue: string) => {
+    try {
+      setLoading(true);
+      setError("");
+      const response = await fetch(`http://localhost:1337/api/conferences?filters[passcode][$eq]=${passcodeValue}&populate=logo`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch conference data');
+      }
+      
+      const data: ConferenceResponse = await response.json();
+      setConference(data.data[0] || null);
+      console.log('Conference data:', data.data[0]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      console.error('Error fetching conference:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handlePasscodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const filteredValue = filterPasscode(e.target.value);
     setPasscode(filteredValue);
-    setIsValid(isPasscode(filteredValue));
+    const valid = isPasscode(filteredValue);
+    setIsValid(valid);
+    
+    // Clear previous conference data when passcode changes
+    setConference(null);
+    setError("");
+    
+    // If passcode is valid, fetch conference data
+    if (valid) {
+      fetchConference(filteredValue);
+    }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <h1 className="mb-4 text-4xl font-bold tracking-tight text-heading md:text-5xl lg:text-6xl">Unified Event Solutions</h1>
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            Enter Passcode to get started.
-          </h1>
-          <div className="w-full max-w-md">
-            <input
-              type="text"
-              value={passcode}
-              onChange={handlePasscodeChange}
-              placeholder="Enter 6-letter passcode"
-              maxLength={6}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent outline-none text-black dark:bg-zinc-800 dark:text-white dark:placeholder-zinc-400 ${
-                passcode.length === 0 
-                  ? 'border-gray-300 dark:border-zinc-600 focus:ring-blue-500' 
-                  : isValid 
-                    ? 'border-green-500 dark:border-green-500 focus:ring-green-500' 
-                    : 'border-red-500 dark:border-red-500 focus:ring-red-500'
-              }`}
-            />
-            {passcode.length > 0 && !isValid && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                Passcode must be exactly 6 letters (a-z)
-              </p>
-            )}
-            {passcode.length > 0 && isValid && (
-              <p className="mt-1 text-sm text-green-600 dark:text-green-400">
-                Valid passcode ✓
-              </p>
-            )}
-          </div>
-          <button
-            disabled={!isValid || passcode.length === 0}
-            className={`flex h-12 w-full items-center justify-center gap-2 rounded-full px-5 transition-colors md:w-[158px] ${
-              isValid && passcode.length > 0
-                ? 'bg-foreground text-background hover:bg-[#383838] dark:hover:bg-[#ccc] cursor-pointer'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-zinc-700 dark:text-zinc-400'
-            }`}
-            onClick={() => {
-              if (isValid && passcode.length > 0) {
-                // Handle valid passcode submission here
-                console.log('Valid passcode entered:', passcode);
-              }
+    <Box 
+      sx={{ 
+        minHeight: '100vh', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center'
+      }}
+    >
+      <Container maxWidth="md">
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            minHeight: '100vh',
+            py: { xs: 8, md: 16 },
+            px: { xs: 2, md: 8 },
+            textAlign: { xs: 'center', sm: 'left' }
+          }}
+        >
+          <Typography 
+            variant="h2" 
+            component="h1" 
+            fontWeight="bold" 
+            sx={{ 
+              mb: 4, 
+              fontSize: { xs: '2rem', md: '3rem', lg: '4rem' },
+              lineHeight: 1.2 
             }}
           >
-            Get Started
-          </button>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Don't have a passcode? {" "}
-            <a href="/faq" className="font-medium text-zinc-950 dark:text-zinc-50 hover:underline">
-              Check our FAQ
-            </a>
-            {" "} for help getting started.
-          </p>
-           {/*  <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+            Unified Event Solutions
+          </Typography>
+          
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, width: '100%', maxWidth: 'md' }}>
+            <Typography 
+              variant="h6" 
+              component="h6" 
+              fontWeight="600"
+              sx={{ 
+                maxWidth: '400px',
+                lineHeight: 1.3
+              }}
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Questions
-          </a> */}
-        </div>
-      </main>
-    </div>
+              Enter Passcode to get started.
+            </Typography>
+            
+            <Box sx={{ width: '100%', maxWidth: '400px' }}>
+              <TextField
+                fullWidth
+                value={passcode}
+                onChange={handlePasscodeChange}
+                placeholder="Enter 6-letter passcode"
+                inputProps={{ maxLength: 6 }}
+                color={
+                  passcode.length === 0 
+                    ? 'primary'
+                    : isValid 
+                      ? 'success' 
+                      : 'error'
+                }
+                error={passcode.length > 0 && !isValid}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '&.Mui-focused fieldset': {
+                      borderColor: passcode.length === 0 
+                        ? 'primary.main'
+                        : isValid 
+                          ? 'success.main' 
+                          : 'error.main'
+                    }
+                  }
+                }}
+              />
+              
+              {passcode.length > 0 && !isValid && (
+                <Alert severity="error" sx={{ mt: 1 }}>
+                  Passcode must be exactly 6 letters (a-z)
+                </Alert>
+              )}
+              
+              {passcode.length > 0 && isValid && (
+                <Box sx={{ mt: 1 }}>
+                  {loading && (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <CircularProgress size={16} />
+                      <Typography variant="body2" color="primary">
+                        Loading conference data...
+                      </Typography>
+                    </Box>
+                  )}
+                  {error && (
+                    <Alert severity="error">
+                      Conference Not Found. Check passcode and try again.
+                    </Alert>
+                  )}
+                  {conference && <RegistrationStart conference={conference} />}
+                </Box>
+              )}
+            </Box>
+          </Box>
+          
+          <Box sx={{ mt: 4 }}>
+            <Typography variant="h6" color="text.secondary">
+              Don't have a passcode?{' '}
+              <Link href="/faq" underline="hover" fontWeight="medium">
+                Check our FAQ
+              </Link>
+              {' '}for help getting started.
+            </Typography>
+          </Box>
+        </Box>
+      </Container>
+    </Box>
   );
 }

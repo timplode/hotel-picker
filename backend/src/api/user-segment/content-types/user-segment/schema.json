@@ -1,0 +1,28 @@
+{
+  "kind": "collectionType",
+  "collectionName": "user_segments",
+  "info": {
+    "singularName": "user-segment",
+    "pluralName": "user-segments",
+    "displayName": "UserSegment"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "conference": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::conference.conference",
+      "inversedBy": "user_segments"
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    }
+  }
+}

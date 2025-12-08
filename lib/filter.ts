@@ -1,3 +1,3 @@
 export function filterPasscode(input: string): string {
-  return input.toLowerCase().replace(/[^a-z]/g, '').slice(0, 6);
+  return input.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
 }
