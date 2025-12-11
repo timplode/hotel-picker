@@ -20,6 +20,8 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { Conference } from '../types/conference';
+import { Order } from '../types/order';
+import { set } from 'date-fns';
 
 interface Occupant {
   id: string;
@@ -36,11 +38,13 @@ interface Room {
 }
 
 interface RoomSelectorProps {
-  conference?: Conference;
-  onChange?: (rooms: Room[]) => void;
+  order?: Order | null;
+  conference?: Conference | null;
+  setOrderProp?: (field: string, value: any) => void;
+  
 }
 
-export default function RoomSelector({ conference, onChange }: RoomSelectorProps) {
+export default function RoomSelector({ conference, setOrderProp }: RoomSelectorProps) {
   const [rooms, setRooms] = useState<Room[]>([
     {
       id: '1',
@@ -56,7 +60,7 @@ export default function RoomSelector({ conference, onChange }: RoomSelectorProps
       room.id === roomId ? { ...room, [field]: value } : room
     );
     setRooms(updatedRooms);
-    onChange?.(updatedRooms);
+    setOrderProp?.('rooms', updatedRooms);
   };
 
   const handleOccupantChange = (roomId: string, occupantId: string, field: keyof Occupant, value: string) => {
@@ -70,7 +74,7 @@ export default function RoomSelector({ conference, onChange }: RoomSelectorProps
       return room;
     });
     setRooms(updatedRooms);
-    onChange?.(updatedRooms);
+    setOrderProp?.('rooms', updatedRooms);
   };
 
   const addRoom = () => {
@@ -83,7 +87,7 @@ export default function RoomSelector({ conference, onChange }: RoomSelectorProps
     };
     const updatedRooms = [...rooms, newRoom];
     setRooms(updatedRooms);
-    onChange?.(updatedRooms);
+    setOrderProp?.('rooms', updatedRooms);
   };
 
   const removeRoom = (roomId: string) => {
@@ -91,7 +95,7 @@ export default function RoomSelector({ conference, onChange }: RoomSelectorProps
     if (room && room.occupants.length === 0) {
       const updatedRooms = rooms.filter(r => r.id !== roomId);
       setRooms(updatedRooms);
-      onChange?.(updatedRooms);
+      setOrderProp?.('rooms', updatedRooms);
     }
   };
 
@@ -124,7 +128,7 @@ export default function RoomSelector({ conference, onChange }: RoomSelectorProps
         <Box>
         <Button
           variant="outlined"
-          startIcon={<AddIcon size="small" />}
+          startIcon={<AddIcon />}
           onClick={addRoom}
           size="small"
         >
@@ -152,7 +156,7 @@ export default function RoomSelector({ conference, onChange }: RoomSelectorProps
             </Box>
 
             <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <FormControl fullWidth size="small">
                   <InputLabel>Room Type</InputLabel>
                   <Select
@@ -165,7 +169,7 @@ export default function RoomSelector({ conference, onChange }: RoomSelectorProps
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
                   label="Arrival Date"
@@ -180,7 +184,7 @@ export default function RoomSelector({ conference, onChange }: RoomSelectorProps
                   size="small"
                 />
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
                   label="Departure Date"
@@ -220,7 +224,7 @@ export default function RoomSelector({ conference, onChange }: RoomSelectorProps
             ) : (
               <Grid container spacing={2}>
                 {room.occupants.map((occupant) => (
-                  <Grid item xs={12} key={occupant.id}>
+                  <Grid size={{ xs: 12 }} key={occupant.id}>
                     <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                       <TextField
                         label="First Name"

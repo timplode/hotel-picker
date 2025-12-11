@@ -3,17 +3,11 @@ export interface Hotel {
   id: number;
   old_id?: string;
   name: string;
-  description?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  zipcode?: string;
-  phone?: string;
-  email?: string;
+  longName: string
+  addressCity?: string;
+  addressState?: string;
+  addressZip?: string;
   website?: string;
-  rate?: number;
-  capacity?: number;
-  availability?: number;
   amenities?: string;
   conference?: {
     documentId: string;

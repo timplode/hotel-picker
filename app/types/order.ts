@@ -4,8 +4,10 @@ export interface Order {
   billingAddressee: string;
   billingCity: string | null;
   billingCountry: string | null;
+  billingState: string | null;
   billingStreet1: string | null;
   billingStreet2: string | null;
+  billingZip: string | null;
   confirmationNumbers: string | null;
   contactCell: string | null;
   contactEmail: string | null;

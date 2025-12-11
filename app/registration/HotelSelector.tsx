@@ -154,7 +154,7 @@ export default function HotelSelector({ conference, order, setOrderProp }: Hotel
       {/* Hotel Cards Grid */}
       <Grid container spacing={3}>
         {hotels.map((hotel) => (
-          <Grid item xs={12} md={6} lg={4} key={hotel.documentId}>
+          <Grid size={{ xs: 6, md: 8 }} key={hotel.documentId}>
             <Card 
               sx={{ 
                 height: '100%', 
@@ -174,9 +174,9 @@ export default function HotelSelector({ conference, order, setOrderProp }: Hotel
                   {hotel.longName}
                 </Typography>
                 
-                {hotel.description && (
+                {hotel.amenities && (
                   <Typography variant="body2" color="text.secondary" paragraph>
-                    {hotel.description}
+                    {hotel.amenities}
                   </Typography>
                 )}
 
@@ -185,18 +185,6 @@ export default function HotelSelector({ conference, order, setOrderProp }: Hotel
                     {hotel.addressCity && `${hotel.addressCity}`}
                     {hotel.addressState && `, ${hotel.addressState}`}
                     {hotel.addressZip && ` ${hotel.addressZip}`}
-                  </Typography>
-                )}
-
-                {hotel.phone && (
-                  <Typography variant="body2" color="text.secondary">
-                    <strong>Phone:</strong> {hotel.phone}
-                  </Typography>
-                )}
-
-                {hotel.email && (
-                  <Typography variant="body2" color="text.secondary">
-                    <strong>Email:</strong> {hotel.email}
                   </Typography>
                 )}
 

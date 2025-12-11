@@ -13,7 +13,7 @@ export default function BillingInformation({
   return (
     <Box sx={{ mt: 2 }}>
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12, md: 6}}>
           <TextField
             fullWidth
             label="Billing Name"
@@ -24,7 +24,7 @@ export default function BillingInformation({
             required
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12, md: 6}}>
           <TextField
             fullWidth
             label="Street Address"
@@ -35,7 +35,7 @@ export default function BillingInformation({
             required
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12, md: 6}}>
           <TextField
             fullWidth
             label="Street Address Line 2"
@@ -46,7 +46,7 @@ export default function BillingInformation({
             placeholder="Apartment, suite, unit, building, floor, etc."
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6}}>
           <TextField
             fullWidth
             label="City"
@@ -57,7 +57,7 @@ export default function BillingInformation({
             required
           />
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid size={{ xs: 12, md: 3}}>
           <TextField
             fullWidth
             label="State"
@@ -69,11 +69,11 @@ export default function BillingInformation({
             placeholder="CA"
           />
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid size={{ xs: 12, md: 3}}>
           <TextField
             fullWidth
             label="Postal Code"
-            value={order?.billingPostalCode || ''}
+            value={order?.billingZip || ''}
             onChange={(e) => setOrderProp('billingPostalCode', e.target.value)}
             variant="outlined"
             size="small"
@@ -81,7 +81,7 @@ export default function BillingInformation({
             placeholder="12345"
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6}}>
           <TextField
             fullWidth
             label="Country"

@@ -159,7 +159,7 @@ export default function Registration() {
   };
 
   const handleOrderFieldChange = (field: string, value: string) => {
-    setOrderProp(field, value, setOrder);
+    setOrderProp(field, value);
   };
 
   return (
