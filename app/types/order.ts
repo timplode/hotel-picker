@@ -21,6 +21,9 @@ export interface Order {
   staffState: string | null;
   state: string | null;
   studentsShareBeds: boolean;
+  selectedHotel?: string;
+  rewardsNumber?: string;
+  termsAccepted?: boolean;
   createdAt: string;
   updatedAt: string;
   publishedAt: string;

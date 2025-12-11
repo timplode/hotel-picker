@@ -58,6 +58,15 @@
       "relation": "oneToMany",
       "target": "api::user-segment.user-segment",
       "mappedBy": "conference"
+    },
+    "hotel_conferences": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::hotel-conference.hotel-conference",
+      "mappedBy": "conference"
+    },
+    "old_id": {
+      "type": "string"
     }
   }
 }

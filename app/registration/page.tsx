@@ -23,6 +23,9 @@ import { Order } from "../types/order";
 import { Conference } from "../types/conference";
 import BillingInformation from "./BillingInformation";
 import RoomSelector from "./RoomSelector";
+import HotelSelector from "./HotelSelector";
+import HotelPaperwork from "./HotelPaperwork";
+import OrderSummary from "./OrderSummary";
 
 
 
@@ -38,14 +41,35 @@ const NextStepButton = ({ onClick, disabled = false, children }: {
     onClick={onClick}
     disabled={disabled}
     endIcon={<ArrowForwardIcon size={"small"} />}
+    maxWidth="400px"
     sx={{ 
       px: 4, 
       py: 0.5,
-      mt: 2,
-      width: "100%"
+      mt: 2
     }}
   >
     {children || 'Next Step'}
+  </Button>
+);
+
+const PrevStepButton = ({ onClick, disabled = false, children }: { 
+  onClick: () => void; 
+  disabled?: boolean;
+  children?: React.ReactNode;
+}) => (
+  <Button
+    color="primary"
+    size="small"
+    onClick={onClick}
+    disabled={disabled}
+    startIcon={<ArrowBackIcon size={"small"} />}
+    sx={{ 
+      px: 4, 
+      py: 0.5,
+      mt: 2
+    }}
+  >
+    {children || 'Back'}
   </Button>
 );
 
@@ -97,24 +121,28 @@ export default function Registration() {
 
   const steps = [
     {
-        label: 'Contact Information',
+        label: 'Contact',
         content: <ContactInformation order={order} setOrderProp={setOrderProp} />
     },
     {
-        label: 'Billing Information', 
+        label: 'Billing', 
         content: <BillingInformation order={order} setOrderProp={setOrderProp} />
     },
     {
-        label: 'Select Rooms',
+        label: 'Occupants & Rooms',
         content: <RoomSelector order={order} setOrderProp={setOrderProp} conference={conference} />
     },
     {
-        label: 'Payment Information',
-        content: 'Enter payment details to secure your reservation.'
+        label: 'Hotel Selection',
+        content: <HotelSelector order={order} setOrderProp={setOrderProp} conference={conference} />
+    },
+    {
+        label: 'Hotel Paperwork',
+        content: <HotelPaperwork order={order} setOrderProp={setOrderProp} conference={conference} />
     },
     {
         label: 'Review & Confirm',
-        content: 'Review all information and confirm your hotel reservation.'
+        content: <OrderSummary order={order} setOrderProp={setOrderProp} conference={conference} />
     }
     ];
 
@@ -177,9 +205,12 @@ export default function Registration() {
                 </StepLabel>
                 <StepContent>
                   {step.content}
+                  <PrevStepButton 
+                    onClick={handlePreviousStep}
+                    disabled={activeStep === 0}
+                  />
                   <NextStepButton 
                     onClick={handleNextStep}
-                    disabled={activeStep === steps.length - 1}
                   >
                     {activeStep === steps.length - 1 ? 'Complete Registration' : 'Next Step'}
                   </NextStepButton>
@@ -189,69 +220,7 @@ export default function Registration() {
           </Stepper>
         </Paper>
 
-        <Paper elevation={1} sx={{ p: 4 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-            <Box>
-              <Typography variant="h4" component="h2" fontWeight="600" sx={{ mb: 2 }}>
-                Conference Information
-              </Typography>
-              <Typography variant="body1" color="text.secondary">
-                Registration form content will be added here based on the conference details.
-              </Typography>
-            </Box>
-
-            <Divider />
-
-            {activeStep === 0 && (
-              <ContactInformation
-                contactFirstName={order.contactFirstName || ''}
-                contactLastName={order.contactLastName || ''}
-                contactEmail={order.contactEmail || ''}
-                contactCell={order.contactCell || ''}
-                onChange={handleOrderFieldChange}
-              />
-            )}
-            {activeStep === 1 && (
-              <BillingInformation
-                order={order}
-                setOrderProp={setOrderProp}
-              />
-            )}
-            {activeStep === 2 && (
-              <RoomSelector conference={conference || undefined} />
-            )}
-            {activeStep >= 3 && (
-              <Box>
-                <Typography variant="h5" component="h3" fontWeight="600" sx={{ mb: 3 }}>
-                  {steps[activeStep].label}
-                </Typography>
-                <Typography variant="body1" color="text.secondary">
-                  {steps[activeStep].content}
-                </Typography>
-              </Box>
-            )}
-
-            <Divider />
-
-            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'space-between' }}>
-              <Button
-                variant="outlined"
-                onClick={handlePreviousStep}
-                disabled={activeStep === 0}
-                sx={{ px: 4, py: 1.5 }}
-              >
-                Previous
-              </Button>
-              
-              <NextStepButton 
-                onClick={handleNextStep}
-                disabled={activeStep === steps.length - 1}
-              >
-                {activeStep === steps.length - 1 ? 'Complete Registration' : 'Next Step'}
-              </NextStepButton>
-            </Box>
-          </Box>
-        </Paper>
+        
       </Container>
     </Box>
   );

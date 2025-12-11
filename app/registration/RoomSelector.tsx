@@ -119,7 +119,7 @@ export default function RoomSelector({ conference, onChange }: RoomSelectorProps
     <Box sx={{ mt: 2 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h6" component="h3">
-          Room Selection
+          Occupants
         </Typography>
         <Box>
         <Button

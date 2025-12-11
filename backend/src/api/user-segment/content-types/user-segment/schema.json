@@ -23,6 +23,10 @@
     },
     "description": {
       "type": "text"
+    },
+    "old_id": {
+      "type": "string",
+      "unique": true
     }
   }
 }

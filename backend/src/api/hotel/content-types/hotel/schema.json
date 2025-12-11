@@ -1,0 +1,61 @@
+{
+  "kind": "collectionType",
+  "collectionName": "hotels",
+  "info": {
+    "singularName": "hotel",
+    "pluralName": "hotels",
+    "displayName": "Hotel"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "longName": {
+      "type": "text"
+    },
+    "logo": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "addressCity": {
+      "type": "string",
+      "required": true
+    },
+    "addressState": {
+      "type": "string",
+      "required": true
+    },
+    "addressZip": {
+      "type": "string",
+      "required": true
+    },
+    "amenities": {
+      "type": "text",
+      "required": true
+    },
+    "website": {
+      "type": "string"
+    },
+    "hotel_conferences": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::hotel-conference.hotel-conference",
+      "mappedBy": "hotel"
+    },
+    "old_id": {
+      "type": "string",
+      "unique": true
+    }
+  }
+}

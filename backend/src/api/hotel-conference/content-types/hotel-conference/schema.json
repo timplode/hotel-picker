@@ -1,0 +1,81 @@
+{
+  "kind": "collectionType",
+  "collectionName": "hotel_conferences",
+  "info": {
+    "singularName": "hotel-conference",
+    "pluralName": "hotel-conferences",
+    "displayName": "HotelConference"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "conference": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::conference.conference",
+      "inversedBy": "hotel_conferences"
+    },
+    "hotel": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::hotel.hotel",
+      "inversedBy": "hotel_conferences"
+    },
+    "contactEmail": {
+      "type": "email"
+    },
+    "contactName": {
+      "type": "string",
+      "required": true
+    },
+    "contactPhone": {
+      "type": "string"
+    },
+    "dateToSendCSVFile": {
+      "type": "date"
+    },
+    "hasBusParking": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "hasTransitToVenue": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "priority": {
+      "type": "integer"
+    },
+    "requiresCreditCard": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    },
+    "taxPerRoomNight": {
+      "type": "decimal",
+      "required": true
+    },
+    "taxPerRoomNightNonProfit": {
+      "type": "decimal",
+      "required": true,
+      "default": 0
+    },
+    "taxRatePercentage": {
+      "type": "decimal",
+      "required": true,
+      "default": 0
+    },
+    "taxRatePercentageNonProfit": {
+      "type": "decimal",
+      "required": true,
+      "default": 0
+    },
+    "old_id": {
+      "type": "string",
+      "unique": true
+    }
+  }
+}

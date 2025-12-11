@@ -14,11 +14,9 @@ export default function ContactInformation({
   const phoneNumber = order?.contactCell || '';
   const isPhoneValid = phoneNumber === '' || isValidPhoneNumber(phoneNumber);
   return (
-    <Box sx={{ mt: 2 }}>
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
+    <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2, maxWidth: '400px' }}>
+     
           <TextField
-            fullWidth
             label="First Name"
             value={order?.contactFirstName}
             onChange={(e) => setOrderProp('contactFirstName', e.target.value)}
@@ -26,8 +24,7 @@ export default function ContactInformation({
             size="small"
             required
           />
-        </Grid>
-        <Grid item xs={12} md={6}>
+        
           <TextField
             fullWidth
             label="Last Name"
@@ -37,8 +34,7 @@ export default function ContactInformation({
             size="small"
             required
           />
-        </Grid>
-        <Grid item xs={12} md={6}>
+      
           <TextField
             fullWidth
             label="Email Address"
@@ -49,8 +45,7 @@ export default function ContactInformation({
             size="small"
             required
           />
-        </Grid>
-        <Grid item xs={12} md={6}>
+    
           <TextField
             fullWidth
             label="Mobile Phone"
@@ -61,12 +56,9 @@ export default function ContactInformation({
             size="small"
             required
             placeholder="(555) 123-4567"
-
             error={order?.contactCell !== ""}
             helperText={isValidPhoneNumber(order?.contactCell || "") === false ? 'Please enter a valid 10-digit phone number' : ''}
           />
-        </Grid>
-      </Grid>
     </Box>
   );
 }
