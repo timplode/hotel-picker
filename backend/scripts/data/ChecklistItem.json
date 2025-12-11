@@ -1,0 +1,222 @@
+[
+    {
+        "created": "2025-01-28 20:57:33.194Z",
+        "fileForUser": "",
+        "hotelConference": "9p6g50ody3o1p3a",
+        "id": "jd80uuh5cxisj5l",
+        "link": "",
+        "message": "If you have a hotel rewards number, please enter it here:",
+        "number": 0,
+        "responseRequired": "optionalText",
+        "updated": "2025-01-28 20:57:33.194Z"
+    },
+    {
+        "created": "2025-01-28 20:57:33.197Z",
+        "fileForUser": "",
+        "hotelConference": "9p6g50ody3o1p3a",
+        "id": "r5to0mmqconfyj7",
+        "link": "https://www.marriott.com/about/terms-of-use.mi",
+        "message": "Please confirm that you agree to the hotel's terms and conditions:",
+        "number": 1,
+        "responseRequired": "confirm",
+        "updated": "2025-01-28 20:57:33.197Z"
+    },
+    {
+        "created": "2025-01-28 20:57:33.198Z",
+        "fileForUser": "",
+        "hotelConference": "dni7td01zrs613a",
+        "id": "b9dufnfm0bo97eu",
+        "link": "",
+        "message": "If you have a hotel rewards number, please enter it here:",
+        "number": 0,
+        "responseRequired": "optionalText",
+        "updated": "2025-01-28 20:57:33.198Z"
+    },
+    {
+        "created": "2025-01-28 20:57:33.199Z",
+        "fileForUser": "",
+        "hotelConference": "dni7td01zrs613a",
+        "id": "61mgmy3qr8fhq2j",
+        "link": "https://www.marriott.com/about/terms-of-use.mi",
+        "message": "Please confirm that you agree to the hotel's terms and conditions:",
+        "number": 1,
+        "responseRequired": "confirm",
+        "updated": "2025-01-28 20:57:33.199Z"
+    },
+    {
+        "created": "2025-01-28 20:57:33.202Z",
+        "fileForUser": "",
+        "hotelConference": "g2c7dkeqtfjdpuo",
+        "id": "hqd0npmkvwocoxl",
+        "link": "",
+        "message": "If you have a hotel rewards number, please enter it here:",
+        "number": 0,
+        "responseRequired": "optionalText",
+        "updated": "2025-01-28 20:57:33.202Z"
+    },
+    {
+        "created": "2025-01-28 20:57:33.203Z",
+        "fileForUser": "",
+        "hotelConference": "g2c7dkeqtfjdpuo",
+        "id": "z3v6ozkw63g7eol",
+        "link": "https://www.marriott.com/about/terms-of-use.mi",
+        "message": "Please confirm that you agree to the hotel's terms and conditions:",
+        "number": 1,
+        "responseRequired": "confirm",
+        "updated": "2025-01-28 20:57:33.203Z"
+    },
+    {
+        "created": "2025-01-28 20:57:33.204Z",
+        "fileForUser": "",
+        "hotelConference": "8tm2l8jiojyoi8o",
+        "id": "0i19i778fk3b31v",
+        "link": "",
+        "message": "If you have a hotel rewards number, please enter it here:",
+        "number": 0,
+        "responseRequired": "optionalText",
+        "updated": "2025-01-28 20:57:33.204Z"
+    },
+    {
+        "created": "2025-01-28 20:57:33.205Z",
+        "fileForUser": "",
+        "hotelConference": "8tm2l8jiojyoi8o",
+        "id": "j93xs57uyuhy9k4",
+        "link": "https://www.marriott.com/about/terms-of-use.mi",
+        "message": "Please confirm that you agree to the hotel's terms and conditions:",
+        "number": 1,
+        "responseRequired": "confirm",
+        "updated": "2025-01-28 20:57:33.205Z"
+    },
+    {
+        "created": "2025-01-28 20:57:33.206Z",
+        "fileForUser": "",
+        "hotelConference": "yzwo1lju81y6zdm",
+        "id": "qh8n0u50ol3kvr0",
+        "link": "",
+        "message": "If you have a hotel rewards number, please enter it here:",
+        "number": 0,
+        "responseRequired": "optionalText",
+        "updated": "2025-01-28 20:57:33.206Z"
+    },
+    {
+        "created": "2025-01-28 20:57:33.208Z",
+        "fileForUser": "",
+        "hotelConference": "yzwo1lju81y6zdm",
+        "id": "e0e6o51rcgyf0q9",
+        "link": "https://www.sonesta.com/terms-use",
+        "message": "Please confirm that you agree to the hotel's terms and conditions:",
+        "number": 1,
+        "responseRequired": "confirm",
+        "updated": "2025-01-28 20:57:33.208Z"
+    },
+    {
+        "created": "2025-01-28 20:57:33.209Z",
+        "fileForUser": "",
+        "hotelConference": "hrwro7cfpflncg0",
+        "id": "idwvaopu6fhf3ar",
+        "link": "",
+        "message": "If you have a hotel rewards number, please enter it here:",
+        "number": 0,
+        "responseRequired": "optionalText",
+        "updated": "2025-01-28 20:57:33.209Z"
+    },
+    {
+        "created": "2025-01-28 20:57:33.210Z",
+        "fileForUser": "",
+        "hotelConference": "hrwro7cfpflncg0",
+        "id": "qg5qfz159n11xl4",
+        "link": "https://www.marriott.com/about/terms-of-use.mi",
+        "message": "Please confirm that you agree to the hotel's terms and conditions:",
+        "number": 1,
+        "responseRequired": "confirm",
+        "updated": "2025-01-28 20:57:33.210Z"
+    },
+    {
+        "created": "2025-01-28 20:57:33.211Z",
+        "fileForUser": "",
+        "hotelConference": "r2078osq0rz0mqu",
+        "id": "ccv5l2i6dkncp8r",
+        "link": "",
+        "message": "If you have a hotel rewards number, please enter it here:",
+        "number": 0,
+        "responseRequired": "optionalText",
+        "updated": "2025-01-28 20:57:33.211Z"
+    },
+    {
+        "created": "2025-01-28 20:57:33.212Z",
+        "fileForUser": "",
+        "hotelConference": "r2078osq0rz0mqu",
+        "id": "yjto8n62z5i1eak",
+        "link": "https://www.marriott.com/about/terms-of-use.mi",
+        "message": "Please confirm that you agree to the hotel's terms and conditions:",
+        "number": 1,
+        "responseRequired": "confirm",
+        "updated": "2025-01-28 20:57:33.212Z"
+    },
+    {
+        "created": "2025-01-28 20:57:33.214Z",
+        "fileForUser": "",
+        "hotelConference": "p1uo150t528gedq",
+        "id": "dfoqzfdccq1pmsf",
+        "link": "",
+        "message": "If you have a hotel rewards number, please enter it here:",
+        "number": 0,
+        "responseRequired": "optionalText",
+        "updated": "2025-01-28 20:57:33.214Z"
+    },
+    {
+        "created": "2025-01-28 20:57:33.215Z",
+        "fileForUser": "",
+        "hotelConference": "p1uo150t528gedq",
+        "id": "6wrpl5vtyiukv9m",
+        "link": "https://www.marriott.com/about/terms-of-use.mi",
+        "message": "Please confirm that you agree to the hotel's terms and conditions:",
+        "number": 1,
+        "responseRequired": "confirm",
+        "updated": "2025-01-28 20:57:33.215Z"
+    },
+    {
+        "created": "2025-01-28 20:57:33.216Z",
+        "fileForUser": "",
+        "hotelConference": "e1kjbkow163lfla",
+        "id": "zqmx1xig1z96d9q",
+        "link": "",
+        "message": "If you have a hotel rewards number, please enter it here:",
+        "number": 0,
+        "responseRequired": "optionalText",
+        "updated": "2025-01-28 20:57:33.216Z"
+    },
+    {
+        "created": "2025-01-28 20:57:33.218Z",
+        "fileForUser": "",
+        "hotelConference": "e1kjbkow163lfla",
+        "id": "lrv0lzs7ama8h64",
+        "link": "https://www.marriott.com/about/terms-of-use.mi",
+        "message": "Please confirm that you agree to the hotel's terms and conditions:",
+        "number": 1,
+        "responseRequired": "confirm",
+        "updated": "2025-01-28 20:57:33.218Z"
+    },
+    {
+        "created": "2025-01-28 20:57:33.219Z",
+        "fileForUser": "",
+        "hotelConference": "54892oqkkjkgvz7",
+        "id": "mvxfqdmjmgem0lu",
+        "link": "",
+        "message": "If you have a hotel rewards number, please enter it here:",
+        "number": 0,
+        "responseRequired": "optionalText",
+        "updated": "2025-01-28 20:57:33.219Z"
+    },
+    {
+        "created": "2025-01-28 20:57:33.220Z",
+        "fileForUser": "",
+        "hotelConference": "54892oqkkjkgvz7",
+        "id": "zfs3xl2l7ywqdrk",
+        "link": "https://www.sonesta.com/terms-use",
+        "message": "Please confirm that you agree to the hotel's terms and conditions:",
+        "number": 1,
+        "responseRequired": "confirm",
+        "updated": "2025-01-28 20:57:33.220Z"
+    }
+]

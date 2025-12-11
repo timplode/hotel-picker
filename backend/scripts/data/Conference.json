@@ -1,0 +1,28 @@
+[
+    {
+        "allowLogins": 1,
+        "created": "2025-01-28 20:56:55.793Z",
+        "defaultArrivalDate": "2025-06-17",
+        "defaultDepartDate": "2025-06-22",
+        "earliestArrivalDate": "2025-06-17",
+        "id": "u6v5tjh0jhccpy1",
+        "latestDepartDate": "2026-06-22",
+        "logo": "blob_myZ9IiN0NN.jpg",
+        "longName": "General Membership - HOSA Intl Leadership Conference 2025",
+        "name": "2025_HOSA_ILC_GA",
+        "updated": "2025-07-07 14:19:01.828Z"
+    },
+    {
+        "allowLogins": 1,
+        "created": "2025-01-28 20:56:55.798Z",
+        "defaultArrivalDate": "2025-06-16",
+        "defaultDepartDate": "2025-06-22",
+        "earliestArrivalDate": "2025-06-16",
+        "id": "6k9oay8ahr9eqmk",
+        "latestDepartDate": "2026-06-22",
+        "logo": "blob_g2H7o7mG8s.jpg",
+        "longName": "State Advisors - HOSA Intl Leadership Conference 2025",
+        "name": "2025_HOSA_ILC_SA",
+        "updated": "2025-07-07 14:19:07.217Z"
+    }
+]
