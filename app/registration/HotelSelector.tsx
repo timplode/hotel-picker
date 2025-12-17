@@ -36,7 +36,7 @@ export default function HotelSelector({ conference, order, setOrderProp }: Hotel
     if (conference?.documentId) {
       fetchHotels();
     }
-  }, [conference]);
+  }, [conference, order.requiresBusParking, order.requiresTransitToVenue]);
 
   const fetchHotels = async () => {
     if (!conference?.documentId) return;
@@ -45,8 +45,19 @@ export default function HotelSelector({ conference, order, setOrderProp }: Hotel
       setLoading(true);
       setError('');
       
+      // Build filter query with transportation requirements
+      let filterQuery = `filters[conference][documentId][$eq]=${conference.documentId}`;
+      
+      if (order.requiresBusParking) {
+        filterQuery += `&filters[hasBusParking][$eq]=true`;
+      }
+      
+      if (order.requiresTransitToVenue) {
+        filterQuery += `&filters[hasTransitToVenue][$eq]=true`;
+      }
+      
       const response = await fetch(
-        `${APIHOST}/api/conference-hotels?filters[conference][documentId][$eq]=${conference.documentId}&populate=*`
+        `${APIHOST}/api/conference-hotels?${filterQuery}&populate=*`
       );
       
       if (!response.ok) {

@@ -63,12 +63,6 @@
     "segment": {
       "type": "string"
     },
-    "staffNotes": {
-      "type": "text"
-    },
-    "staffState": {
-      "type": "string"
-    },
     "state": {
       "type": "string"
     },
@@ -87,6 +81,9 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::hotel.hotel"
+    },
+    "rewardsNumber": {
+      "type": "string"
     }
   }
 }

@@ -773,9 +773,8 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     requiresTransitToVenue: Schema.Attribute.Boolean &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<false>;
+    rewardsNumber: Schema.Attribute.String;
     segment: Schema.Attribute.String;
-    staffNotes: Schema.Attribute.Text;
-    staffState: Schema.Attribute.String;
     state: Schema.Attribute.String;
     studentsShareBeds: Schema.Attribute.Boolean &
       Schema.Attribute.Required &
