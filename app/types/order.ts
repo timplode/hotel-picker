@@ -1,3 +1,5 @@
+import { Room } from "./room";
+
 export interface Order {
   id: number;
   documentId: string;
@@ -29,6 +31,7 @@ export interface Order {
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
+  rooms?: Room[];
 }
 
 export type OrderResponse = {

@@ -21,21 +21,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { Conference } from '../types/conference';
 import { Order } from '../types/order';
-import { set } from 'date-fns';
-
-interface Occupant {
-  id: string;
-  firstName: string;
-  lastName: string;
-}
-
-interface Room {
-  id: string;
-  type: 'student' | 'chaperone';
-  arrivalDate: string;
-  departureDate: string;
-  occupants: Occupant[];
-}
+import {Room} from '../types/room';
+import {Occupant} from '../types/occupant'; 
 
 interface RoomSelectorProps {
   order?: Order | null;

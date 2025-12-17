@@ -93,58 +93,6 @@ export default function OrderSummary({ conference, order, setOrderProp }: OrderS
         </Box>
       }
 
-      {/* Hotel Information Section */}
-      {selectedHotel && (
-        <Card sx={{ mb: 3 }}>
-          <CardContent>
-            <Typography variant="h6" fontWeight="600" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
-              <CheckCircleIcon color="success" sx={{ mr: 1 }} />
-              Hotel
-            </Typography>
-            
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="body1" fontWeight="600">
-                {selectedHotel.longName}
-              </Typography>
-              
-              {(selectedHotel.addressCity || selectedHotel.addressState || selectedHotel.addressZip) && (
-                <Typography variant="body2" color="text.secondary">
-                  {selectedHotel.addressCity}
-                  {selectedHotel.addressState && `, ${selectedHotel.addressState}`}
-                  {selectedHotel.addressZip && ` ${selectedHotel.addressZip}`}
-                </Typography>
-              )}
-              
-              {selectedHotel.website && (
-                <Link href={selectedHotel.website} target="_blank" rel="noopener noreferrer" sx={{ fontSize: '0.875rem' }}>
-                  Visit Hotel Website
-                </Link>
-              )}
-            </Box>
-
-            <Divider sx={{ my: 2 }} />
-
-            {order.rewardsNumber && (
-              <Box sx={{ mb: 1 }}>
-                <Typography variant="body2">
-                  <strong>Rewards/Loyalty Number:</strong> {order.rewardsNumber}
-                </Typography>
-              </Box>
-            )}
-
-            {order.termsAccepted && (
-              <Box sx={{ mb: 1 }}>
-                <Chip 
-                  label="Terms & Conditions Accepted" 
-                  color="success" 
-                  size="small" 
-                  icon={<CheckCircleIcon />}
-                />
-              </Box>
-            )}
-          </CardContent>
-        </Card>
-      )}
 
       {/* Contact Information Section */}
       <Card sx={{ mb: 3 }}>
@@ -207,6 +155,137 @@ export default function OrderSummary({ conference, order, setOrderProp }: OrderS
           </Box>
         </CardContent>
       </Card>
+
+      {/* Room & Occupants Section */}
+      <Card sx={{ mb: 3 }}>
+        <CardContent>
+          <Typography variant="h6" fontWeight="600" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
+            <CheckCircleIcon color="success" sx={{ mr: 1 }} />
+            Rooms & Occupants
+          </Typography>
+          
+          <Box sx={{ display: 'grid', gap: 2 }}>
+            {order.rooms && order.rooms.length > 0 ? (
+              <>
+                <Typography variant="body2">
+                  <strong>Total Rooms:</strong> {order.rooms.length}
+                </Typography>
+                {order.rooms.map((room, index) => (
+                  <Box key={index} sx={{ pl: 2, borderLeft: '2px solid', borderColor: 'primary.light', ml: 1 }}>
+                    <Typography variant="body2" fontWeight="600">
+                      Room {index + 1}
+                    </Typography>
+                    
+                    {room.type && (
+                      <Typography variant="body2">
+                        <strong>Type:</strong> {room.type}
+                      </Typography>
+                    )}
+                    
+                    {room.arrivalDate && (
+                      <Typography variant="body2">
+                        <strong>Check-in Date:</strong> {new Date(room.arrivalDate).toLocaleDateString()}
+                      </Typography>
+                    )}
+                    
+                    {room.departureDate && (
+                      <Typography variant="body2">
+                        <strong>Check-out Date:</strong> {new Date(room.departureDate).toLocaleDateString()}
+                      </Typography>
+                    )}
+
+                    {room.occupants && room.occupants.length > 0 && (
+                      <>
+                        <Typography variant="body2" sx={{ mt: 0.5 }}>
+                          <strong>Occupants ({room.occupants.length}):</strong>
+                        </Typography>
+                        {room.occupants.map((occupant, occupantIndex) => (
+                          <Typography key={occupantIndex} variant="body2" sx={{ ml: 2 }}>
+                            • {occupant.firstName} {occupant.lastName}
+                         
+                          </Typography>
+                        ))}
+                      </>
+                    )}
+                    
+                    
+                  </Box>
+                ))}
+                {order.notesForHotel && (
+                      <Typography variant="body2" sx={{ mt: 0.5 }}>
+                        <strong>Special Requests:</strong> {order.notesForHotel}
+                      </Typography>
+                    )}
+              </>
+            ) : (
+              <Typography variant="body2" color="text.secondary">
+                No rooms selected
+              </Typography>
+            )}
+            
+          
+            
+            {order.notesForHotel && (
+              <Typography variant="body2">
+                <strong>General Notes:</strong> {order.notesForHotel}
+              </Typography>
+            )}
+          </Box>
+        </CardContent>
+      </Card>
+
+      {/* Hotel Information Section */}
+      {selectedHotel && (
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Typography variant="h6" fontWeight="600" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
+              <CheckCircleIcon color="success" sx={{ mr: 1 }} />
+              Hotel
+            </Typography>
+            
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="body1" fontWeight="600">
+                {selectedHotel.longName}
+              </Typography>
+              
+              {(selectedHotel.addressCity || selectedHotel.addressState || selectedHotel.addressZip) && (
+                <Typography variant="body2" color="text.secondary">
+                  {selectedHotel.addressCity}
+                  {selectedHotel.addressState && `, ${selectedHotel.addressState}`}
+                  {selectedHotel.addressZip && ` ${selectedHotel.addressZip}`}
+                </Typography>
+              )}
+              
+              {selectedHotel.website && (
+                <Link href={selectedHotel.website} target="_blank" rel="noopener noreferrer" sx={{ fontSize: '0.875rem' }}>
+                  Visit Hotel Website
+                </Link>
+              )}
+            </Box>
+
+            <Divider sx={{ my: 2 }} />
+
+            {order.rewardsNumber && (
+              <Box sx={{ mb: 1 }}>
+                <Typography variant="body2">
+                  <strong>Rewards/Loyalty Number:</strong> {order.rewardsNumber}
+                </Typography>
+              </Box>
+            )}
+
+            {order.termsAccepted && (
+              <Box sx={{ mb: 1 }}>
+                <Chip 
+                  label="Terms & Conditions Accepted" 
+                  color="success" 
+                  size="small" 
+                  icon={<CheckCircleIcon />}
+                />
+              </Box>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
     </Box>
   );
