@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Container,
   Box,
@@ -10,11 +11,11 @@ import {
   Button,
   Alert,
   CircularProgress,
-  Stack,
-  Tabs,
-  Tab
+  Stack
 } from '@mui/material';
 import { APIHOST } from '../common';
+import AdminTabs from './components/AdminTabs';
+import Statistics from './Statistics';
 
 interface User {
   id: number;
@@ -28,7 +29,8 @@ interface AuthResponse {
 }
 
 export default function AdminPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false || !!localStorage.getItem('adminToken'));
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -36,7 +38,6 @@ export default function AdminPage() {
     identifier: '',
     password: ''
   });
-  const [activeTab, setActiveTab] = useState(0);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,13 +46,13 @@ export default function AdminPage() {
       setLoading(true);
       setError('');
 
-      const response = await fetch(`${APIHOST}/admin/login`, {
+      const response = await fetch(`${APIHOST}/api/auth/local`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: credentials.identifier,
+          identifier: credentials.identifier,
           password: credentials.password
         }),
       });
@@ -62,9 +63,10 @@ export default function AdminPage() {
       }
 
       const data: AuthResponse = await response.json();
-      
+      console.log('Login successful:', data.jwt);
       // Store JWT token in localStorage
       localStorage.setItem('adminToken', data.jwt);
+      localStorage.setItem('adminUser', JSON.stringify(data.user));
       
       setUser(data.user);
       setIsAuthenticated(true);
@@ -91,54 +93,7 @@ export default function AdminPage() {
     }));
   };
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setActiveTab(newValue);
-  };
 
-  // Tab content components
-  const StatsTab = () => (
-    <Paper sx={{ p: 3 }}>
-      <Typography variant="h6" gutterBottom>
-        Statistics Dashboard
-      </Typography>
-      <Typography variant="body1" color="text.secondary">
-        Registration statistics and analytics will be displayed here.
-      </Typography>
-    </Paper>
-  );
-
-  const OrdersTab = () => (
-    <Paper sx={{ p: 3 }}>
-      <Typography variant="h6" gutterBottom>
-        Order Management
-      </Typography>
-      <Typography variant="body1" color="text.secondary">
-        View and manage all conference registrations and orders.
-      </Typography>
-    </Paper>
-  );
-
-  const ConferencesTab = () => (
-    <Paper sx={{ p: 3 }}>
-      <Typography variant="h6" gutterBottom>
-        Conference Management
-      </Typography>
-      <Typography variant="body1" color="text.secondary">
-        Manage conferences, hotels, and conference-hotel relationships.
-      </Typography>
-    </Paper>
-  );
-
-  const ExportsTab = () => (
-    <Paper sx={{ p: 3 }}>
-      <Typography variant="h6" gutterBottom>
-        Data Exports
-      </Typography>
-      <Typography variant="body1" color="text.secondary">
-        Export registration data, reports, and analytics.
-      </Typography>
-    </Paper>
-  );
 
   // Login Form
   if (!isAuthenticated) {
@@ -212,25 +167,10 @@ export default function AdminPage() {
           Welcome back, {user?.username || user?.email}!
         </Alert>
         
-        <Paper sx={{ mb: 3 }}>
-          <Tabs 
-            value={activeTab} 
-            onChange={handleTabChange}
-            variant="fullWidth"
-            sx={{ borderBottom: 1, borderColor: 'divider' }}
-          >
-            <Tab label="Statistics" />
-            <Tab label="Orders" />
-            <Tab label="Conferences" />
-            <Tab label="Exports" />
-          </Tabs>
-        </Paper>
-
+        <AdminTabs currentPath="/admin" />
+        
         <Box sx={{ mt: 3 }}>
-          {activeTab === 0 && <StatsTab />}
-          {activeTab === 1 && <OrdersTab />}
-          {activeTab === 2 && <ConferencesTab />}
-          {activeTab === 3 && <ExportsTab />}
+          <Statistics />
         </Box>
       </Container>
     </Box>

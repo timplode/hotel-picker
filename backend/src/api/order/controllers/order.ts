@@ -21,7 +21,7 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         const entity = await strapi.entityService.create('api::order.order', {
           data: {
             ...data,
-            hotel: data.selectedHotel || null,
+            conference_hotel: data.selectedHotel || null,
             orderStatus: 'received',
             publishedAt: new Date(),
           },

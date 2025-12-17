@@ -77,10 +77,10 @@
       "target": "api::order-room.order-room",
       "mappedBy": "order"
     },
-    "hotel": {
+    "conference_hotel": {
       "type": "relation",
       "relation": "oneToOne",
-      "target": "api::hotel.hotel"
+      "target": "api::conference-hotel.conference-hotel"
     },
     "rewardsNumber": {
       "type": "string"

@@ -15,8 +15,8 @@ import {
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Conference } from '../types/conference';
 import { Order } from '../types/order';
-import { Hotel } from '../types/hotel';
 import { APIHOST } from '../common';
+import { ConferenceHotel } from '../types/conferenceHotel';
 
 interface OrderSummaryProps {
   conference: Conference | null;
@@ -25,7 +25,7 @@ interface OrderSummaryProps {
 }
 
 export default function OrderSummary({ conference, order, setOrderProp }: OrderSummaryProps) {
-  const [selectedHotel, setSelectedHotel] = useState<Hotel | null>(null);
+  const [selectedHotel, setSelectedHotel] = useState<ConferenceHotel | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -43,7 +43,7 @@ export default function OrderSummary({ conference, order, setOrderProp }: OrderS
       setError('');
       
       const response = await fetch(
-        `${APIHOST}/api/hotels/${order.selectedHotel}?populate=*`
+        `${APIHOST}/api/conference-hotels/${order.selectedHotel}?populate=*`
       );
       
       if (!response.ok) {
@@ -276,19 +276,19 @@ export default function OrderSummary({ conference, order, setOrderProp }: OrderS
             
             <Box sx={{ mb: 2 }}>
               <Typography variant="body1" fontWeight="600">
-                {selectedHotel.longName}
+                {selectedHotel.hotel.longName}
               </Typography>
               
-              {(selectedHotel.addressCity || selectedHotel.addressState || selectedHotel.addressZip) && (
+              {(selectedHotel.hotel.addressCity || selectedHotel.hotel.addressState || selectedHotel.hotel.addressZip) && (
                 <Typography variant="body2" color="text.secondary">
-                  {selectedHotel.addressCity}
-                  {selectedHotel.addressState && `, ${selectedHotel.addressState}`}
-                  {selectedHotel.addressZip && ` ${selectedHotel.addressZip}`}
+                  {selectedHotel.hotel.addressCity}
+                  {selectedHotel.hotel.addressState && `, ${selectedHotel.hotel.addressState}`}
+                  {selectedHotel.hotel.addressZip && ` ${selectedHotel.hotel.addressZip}`}
                 </Typography>
               )}
               
-              {selectedHotel.website && (
-                <Link href={selectedHotel.website} target="_blank" rel="noopener noreferrer" sx={{ fontSize: '0.875rem' }}>
+              {selectedHotel.hotel.website && (
+                <Link href={selectedHotel.hotel.website} target="_blank" rel="noopener noreferrer" sx={{ fontSize: '0.875rem' }}>
                   Visit Hotel Website
                 </Link>
               )}

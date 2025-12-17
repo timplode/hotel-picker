@@ -747,6 +747,10 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     billingCountry: Schema.Attribute.String;
     billingStreet1: Schema.Attribute.String;
     billingStreet2: Schema.Attribute.String;
+    conference_hotel: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::conference-hotel.conference-hotel'
+    >;
     confirmationNumbers: Schema.Attribute.JSON;
     contactCell: Schema.Attribute.String;
     contactEmail: Schema.Attribute.String;
@@ -755,7 +759,6 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    hotel: Schema.Attribute.Relation<'oneToOne', 'api::hotel.hotel'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::order.order'> &
       Schema.Attribute.Private;

@@ -1,3 +1,4 @@
+import { ConferenceHotel } from "./conferenceHotel";
 import { Room } from "./room";
 
 export interface Order {
@@ -32,6 +33,8 @@ export interface Order {
   updatedAt: string;
   publishedAt: string;
   rooms?: Room[];
+  conference_hotel?: ConferenceHotel | null;
+  orderStatus: string;
 }
 
 export type OrderResponse = {

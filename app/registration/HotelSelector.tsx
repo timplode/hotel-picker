@@ -168,14 +168,14 @@ export default function HotelSelector({ conference, order, setOrderProp }: Hotel
                 height: '100%', 
                 display: 'flex', 
                 flexDirection: 'column',
-                border: selectedHotel === conferenceHotel.hotel.documentId ? 2 : 1,
-                borderColor: selectedHotel === conferenceHotel.hotel.documentId ? 'primary.main' : 'grey.200',
+                border: selectedHotel === conferenceHotel.documentId ? 2 : 1,
+                borderColor: selectedHotel === conferenceHotel.documentId ? 'primary.main' : 'grey.200',
                 cursor: 'pointer',
                 '&:hover': {
                   boxShadow: 3
                 }
               }}
-              onClick={() => handleHotelSelect(conferenceHotel.hotel.documentId)}
+              onClick={() => handleHotelSelect(conferenceHotel.documentId)}
             >
               <CardContent sx={{ flexGrow: 1 }}>
                 <Typography variant="h6" component="h4" gutterBottom>
@@ -233,12 +233,12 @@ export default function HotelSelector({ conference, order, setOrderProp }: Hotel
               
               <CardActions>
                 <Button
-                  variant={selectedHotel === conferenceHotel.hotel.documentId ? "contained" : "outlined"}
+                  variant={selectedHotel === conferenceHotel.documentId ? "contained" : "outlined"}
                   color="primary"
                   fullWidth
-                  onClick={() => handleHotelSelect(conferenceHotel.hotel.documentId)}
+                  onClick={() => handleHotelSelect(conferenceHotel.documentId)}
                 >
-                  {selectedHotel === conferenceHotel.hotel.documentId ? "Selected" : "Select Hotel"}
+                  {selectedHotel === conferenceHotel.documentId ? "Selected" : "Select Hotel"}
                 </Button>
               </CardActions>
             </Card>
