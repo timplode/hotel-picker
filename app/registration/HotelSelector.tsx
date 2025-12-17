@@ -14,7 +14,7 @@ import {
   Alert
 } from '@mui/material';
 
-import { Hotel, HotelResponse } from '../types/hotel';
+import { ConferenceHotel, ConferenceHotelResponse } from '../types/conferenceHotel';
 import { Conference } from '../types/conference';
 import { Order } from '../types/order';
 import { APIHOST } from '../common';
@@ -26,7 +26,7 @@ interface HotelSelectorProps {
 }
 
 export default function HotelSelector({ conference, order, setOrderProp }: HotelSelectorProps) {
-  const [hotels, setHotels] = useState<Hotel[]>([]);
+  const [hotels, setHotels] = useState<ConferenceHotel[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [selectedHotel, setSelectedHotel] = useState<string>(order.selectedHotel || '');
@@ -46,14 +46,14 @@ export default function HotelSelector({ conference, order, setOrderProp }: Hotel
       setError('');
       
       const response = await fetch(
-        `${APIHOST}/api/hotels?filters[hotel_conferences][conference][documentId][$eq]=${conference.documentId}&populate=*`
+        `${APIHOST}/api/conference-hotels?filters[conference][documentId][$eq]=${conference.documentId}&populate=*`
       );
       
       if (!response.ok) {
         throw new Error('Failed to fetch hotels');
       }
       
-      const data: HotelResponse = await response.json();
+      const data: ConferenceHotelResponse = await response.json();
       setHotels(data.data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while loading hotels');
@@ -150,59 +150,59 @@ export default function HotelSelector({ conference, order, setOrderProp }: Hotel
 
       {/* Hotel Cards Grid */}
       <Grid container spacing={3}>
-        {hotels.map((hotel) => (
-          <Grid size={{ xs: 6, md: 8 }} key={hotel.documentId}>
+        {hotels.map((conferenceHotel) => (
+          <Grid size={{ xs: 6, md: 8 }} key={conferenceHotel.hotel.documentId}>
             <Card 
               sx={{ 
                 height: '100%', 
                 display: 'flex', 
                 flexDirection: 'column',
-                border: selectedHotel === hotel.documentId ? 2 : 1,
-                borderColor: selectedHotel === hotel.documentId ? 'primary.main' : 'grey.200',
+                border: selectedHotel === conferenceHotel.hotel.documentId ? 2 : 1,
+                borderColor: selectedHotel === conferenceHotel.hotel.documentId ? 'primary.main' : 'grey.200',
                 cursor: 'pointer',
                 '&:hover': {
                   boxShadow: 3
                 }
               }}
-              onClick={() => handleHotelSelect(hotel.documentId)}
+              onClick={() => handleHotelSelect(conferenceHotel.hotel.documentId)}
             >
               <CardContent sx={{ flexGrow: 1 }}>
                 <Typography variant="h6" component="h4" gutterBottom>
-                  {hotel.longName}
+                  {conferenceHotel.hotel.longName}
                 </Typography>
 
-                {hotel.addressCity && (
+                {conferenceHotel.hotel.addressCity && (
                   <Typography variant="body2" color="text.secondary" paragraph>
-                    {hotel.addressCity && `${hotel.addressCity}`}
-                    {hotel.addressState && `, ${hotel.addressState}`}
-                    {hotel.addressZip && ` ${hotel.addressZip}`}
+                    {conferenceHotel.hotel.addressCity && `${conferenceHotel.hotel.addressCity}`}
+                    {conferenceHotel.hotel.addressState && `, ${conferenceHotel.hotel.addressState}`}
+                    {conferenceHotel.hotel.addressZip && ` ${conferenceHotel.hotel.addressZip}`}
                   </Typography>
                 )}
 
-                {hotel.website && (
+                {conferenceHotel.hotel.website && (
                   <Typography variant="body2" color="primary" sx={{ mt: 1 }}>
-                    <a href={hotel.website} target="_blank" rel="noopener noreferrer">
+                    <a href={conferenceHotel.hotel.website} target="_blank" rel="noopener noreferrer">
                       Visit Website
                     </a>
                   </Typography>
                 )}
 
-                {hotel.amenities && (
+                {conferenceHotel.hotel.amenities && (
                   <Box sx={{ mt: 2 }}>
                     <Typography variant="body2" fontWeight="600" gutterBottom>
                       Amenities:
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {expandedAmenities[hotel.documentId] 
-                        ? hotel.amenities 
-                        : truncateAmenities(hotel.amenities)
+                      {expandedAmenities[conferenceHotel.hotel.documentId] 
+                        ? conferenceHotel.hotel.amenities 
+                        : truncateAmenities(conferenceHotel.hotel.amenities)
                       }
-                      {hotel.amenities.length > 60 && (
+                      {conferenceHotel.hotel.amenities.length > 60 && (
                         <Button
                           size="small"
                           onClick={(e) => {
                             e.stopPropagation();
-                            toggleAmenitiesExpansion(hotel.documentId);
+                            toggleAmenitiesExpansion(conferenceHotel.hotel.documentId);
                           }}
                           sx={{ 
                             ml: 1, 
@@ -212,7 +212,7 @@ export default function HotelSelector({ conference, order, setOrderProp }: Hotel
                             fontSize: '0.75rem'
                           }}
                         >
-                          {expandedAmenities[hotel.documentId] ? 'Show less' : 'Show more'}
+                          {expandedAmenities[conferenceHotel.hotel.documentId] ? 'Show less' : 'Show more'}
                         </Button>
                       )}
                     </Typography>
@@ -222,12 +222,12 @@ export default function HotelSelector({ conference, order, setOrderProp }: Hotel
               
               <CardActions>
                 <Button
-                  variant={selectedHotel === hotel.documentId ? "contained" : "outlined"}
+                  variant={selectedHotel === conferenceHotel.hotel.documentId ? "contained" : "outlined"}
                   color="primary"
                   fullWidth
-                  onClick={() => handleHotelSelect(hotel.documentId)}
+                  onClick={() => handleHotelSelect(conferenceHotel.hotel.documentId)}
                 >
-                  {selectedHotel === hotel.documentId ? "Selected" : "Select Hotel"}
+                  {selectedHotel === conferenceHotel.hotel.documentId ? "Selected" : "Select Hotel"}
                 </Button>
               </CardActions>
             </Card>

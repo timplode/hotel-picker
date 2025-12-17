@@ -512,63 +512,13 @@ export interface ApiConferenceGroupConferenceGroup
   };
 }
 
-export interface ApiConferenceConference extends Struct.CollectionTypeSchema {
-  collectionName: 'conferences';
-  info: {
-    displayName: 'Conference';
-    pluralName: 'conferences';
-    singularName: 'conference';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    allowLogins: Schema.Attribute.Boolean &
-      Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<false>;
-    conference_groups: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::conference-group.conference-group'
-    >;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    defaultArrivalDate: Schema.Attribute.Date & Schema.Attribute.Required;
-    defaultDepartureDate: Schema.Attribute.Date;
-    earliestArrivalDate: Schema.Attribute.Date & Schema.Attribute.Required;
-    hotel_conferences: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::hotel-conference.hotel-conference'
-    >;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::conference.conference'
-    > &
-      Schema.Attribute.Private;
-    logo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
-    longName: Schema.Attribute.String;
-    name: Schema.Attribute.String & Schema.Attribute.Required;
-    old_id: Schema.Attribute.String;
-    passcode: Schema.Attribute.String;
-    publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    user_segments: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::user-segment.user-segment'
-    >;
-  };
-}
-
-export interface ApiHotelConferenceHotelConference
+export interface ApiConferenceHotelConferenceHotel
   extends Struct.CollectionTypeSchema {
-  collectionName: 'hotel_conferences';
+  collectionName: 'conference_hotels';
   info: {
-    displayName: 'HotelConference';
-    pluralName: 'hotel-conferences';
-    singularName: 'hotel-conference';
+    displayName: 'ConferenceHotel';
+    pluralName: 'conference-hotels';
+    singularName: 'conference-hotel';
   };
   options: {
     draftAndPublish: false;
@@ -595,7 +545,7 @@ export interface ApiHotelConferenceHotelConference
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
-      'api::hotel-conference.hotel-conference'
+      'api::conference-hotel.conference-hotel'
     > &
       Schema.Attribute.Private;
     old_id: Schema.Attribute.String & Schema.Attribute.Unique;
@@ -620,6 +570,56 @@ export interface ApiHotelConferenceHotelConference
   };
 }
 
+export interface ApiConferenceConference extends Struct.CollectionTypeSchema {
+  collectionName: 'conferences';
+  info: {
+    displayName: 'Conference';
+    pluralName: 'conferences';
+    singularName: 'conference';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    allowLogins: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
+    conference_groups: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::conference-group.conference-group'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    defaultArrivalDate: Schema.Attribute.Date & Schema.Attribute.Required;
+    defaultDepartureDate: Schema.Attribute.Date;
+    earliestArrivalDate: Schema.Attribute.Date & Schema.Attribute.Required;
+    hotel_conferences: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::conference-hotel.conference-hotel'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::conference.conference'
+    > &
+      Schema.Attribute.Private;
+    logo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    longName: Schema.Attribute.String;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    old_id: Schema.Attribute.String;
+    passcode: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user_segments: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::user-segment.user-segment'
+    >;
+  };
+}
+
 export interface ApiHotelHotel extends Struct.CollectionTypeSchema {
   collectionName: 'hotels';
   info: {
@@ -635,13 +635,13 @@ export interface ApiHotelHotel extends Struct.CollectionTypeSchema {
     addressState: Schema.Attribute.String & Schema.Attribute.Required;
     addressZip: Schema.Attribute.String & Schema.Attribute.Required;
     amenities: Schema.Attribute.Text & Schema.Attribute.Required;
+    conference_hotels: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::conference-hotel.conference-hotel'
+    >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    hotel_conferences: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::hotel-conference.hotel-conference'
-    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::hotel.hotel'> &
       Schema.Attribute.Private;
@@ -1332,8 +1332,8 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::conference-group.conference-group': ApiConferenceGroupConferenceGroup;
+      'api::conference-hotel.conference-hotel': ApiConferenceHotelConferenceHotel;
       'api::conference.conference': ApiConferenceConference;
-      'api::hotel-conference.hotel-conference': ApiHotelConferenceHotelConference;
       'api::hotel.hotel': ApiHotelHotel;
       'api::order-room-occupant.order-room-occupant': ApiOrderRoomOccupantOrderRoomOccupant;
       'api::order-room.order-room': ApiOrderRoomOrderRoom;

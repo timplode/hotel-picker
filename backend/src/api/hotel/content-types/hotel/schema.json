@@ -47,10 +47,10 @@
     "website": {
       "type": "string"
     },
-    "hotel_conferences": {
+    "conference_hotels": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::hotel-conference.hotel-conference",
+      "target": "api::conference-hotel.conference-hotel",
       "mappedBy": "hotel"
     },
     "old_id": {

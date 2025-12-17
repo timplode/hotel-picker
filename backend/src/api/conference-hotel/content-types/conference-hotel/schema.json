@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "hotel_conferences",
+  "collectionName": "conference_hotels",
   "info": {
-    "singularName": "hotel-conference",
-    "pluralName": "hotel-conferences",
-    "displayName": "HotelConference"
+    "singularName": "conference-hotel",
+    "pluralName": "conference-hotels",
+    "displayName": "ConferenceHotel"
   },
   "options": {
     "draftAndPublish": false
@@ -21,7 +21,7 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::hotel.hotel",
-      "inversedBy": "hotel_conferences"
+      "inversedBy": "conference_hotels"
     },
     "contactEmail": {
       "type": "email"

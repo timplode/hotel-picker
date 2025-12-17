@@ -17,15 +17,3 @@ export interface Hotel {
   updatedAt: string;
   publishedAt: string;
 }
-
-export interface HotelResponse {
-  data: Hotel[];
-  meta: {
-    pagination: {
-      page: number;
-      pageSize: number;
-      pageCount: number;
-      total: number;
-    };
-  };
-}

@@ -62,7 +62,7 @@
     "hotel_conferences": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::hotel-conference.hotel-conference",
+      "target": "api::conference-hotel.conference-hotel",
       "mappedBy": "conference"
     },
     "old_id": {
