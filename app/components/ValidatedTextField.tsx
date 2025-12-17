@@ -19,7 +19,7 @@ const StyledTextField = styled(TextField)<{ isValid?: boolean }>(({ theme, isVal
 }));
 
 interface ValidatedTextFieldProps extends Omit<TextFieldProps, 'value'> {
-  value: string;
+  value: string | null;
   validator?: (value: string) => boolean;
 }
 
