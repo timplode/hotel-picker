@@ -156,6 +156,37 @@ export default function OrderSummary({ conference, order, setOrderProp }: OrderS
         </CardContent>
       </Card>
 
+      {/* Transportation Section */}
+      <Card sx={{ mb: 3 }}>
+        <CardContent>
+          <Typography variant="h6" fontWeight="600" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
+            <CheckCircleIcon color="success" sx={{ mr: 1 }} />
+            Transportation
+          </Typography>
+          
+          <Box sx={{ display: 'grid', gap: 1 }}>
+            
+            {order.requiresBusParking && (
+              <Typography variant="body2">
+                <strong>Bus Parking:</strong> Required
+              </Typography>
+            )}
+            
+            {order.requiresTransitToVenue && (
+              <Typography variant="body2">
+                <strong>Transit to Venue:</strong> Required
+              </Typography>
+            )}
+            
+            {!order.requiresBusParking && !order.requiresTransitToVenue && (
+              <Typography variant="body2" color="text.secondary">
+                No transportation requirements specified
+              </Typography>
+            )}
+          </Box>
+        </CardContent>
+      </Card>
+
       {/* Room & Occupants Section */}
       <Card sx={{ mb: 3 }}>
         <CardContent>

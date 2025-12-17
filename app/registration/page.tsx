@@ -23,6 +23,7 @@ import { Order } from "../types/order";
 import { Conference } from "../types/conference";
 import BillingInformation from "./BillingInformation";
 import RoomSelector from "./RoomSelector";
+import TransportationSelector from "./TransportationSelector";
 import HotelSelector from "./HotelSelector";
 import HotelPaperwork from "./HotelPaperwork";
 import OrderSummary from "./OrderSummary";
@@ -131,6 +132,10 @@ export default function Registration() {
     {
         label: 'Occupants & Rooms',
         content: <RoomSelector order={order} setOrderProp={setOrderProp} conference={conference} />
+    },
+    {
+        label: 'Transportation',
+        content: <TransportationSelector order={order} setOrderProp={setOrderProp} conference={conference} />
     },
     {
         label: 'Hotel Selection',
