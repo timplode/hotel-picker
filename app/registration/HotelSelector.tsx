@@ -57,7 +57,7 @@ export default function HotelSelector({ conference, order, setOrderProp }: Hotel
       }
       
       const response = await fetch(
-        `${APIHOST}/api/conference-hotels?${filterQuery}&populate=*`
+        `${APIHOST}/api/conference-hotels?${filterQuery}&populate=*&sort=priority:asc`
       );
       
       if (!response.ok) {
