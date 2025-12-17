@@ -76,7 +76,7 @@ const PrevStepButton = ({ onClick, disabled = false, children }: {
 
 export default function Registration() {
   const [activeStep, setActiveStep] = useState(0);
-  const [order, setOrder] = useState<Order>({contactFirstName: '', contactLastName: '', contactEmail: '', contactCell: ''} as Order);
+  const [order, setOrder] = useState<Order>({contactFirstName: '', contactLastName: '', contactEmail: '', contactCell: '', billingCountry: 'US'} as Order);
   const [conference, setConference] = useState<Conference | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');

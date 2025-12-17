@@ -19,3 +19,9 @@ export function isMinLength2(input: string): boolean {
   // Validate text is at least 2 characters long
   return input.trim().length >= 2;
 }
+
+export function isValidZip(input: string): boolean {
+  // Validate exactly 5 digits for US ZIP code
+  const zipRegex = /^\d{5}$/;
+  return zipRegex.test(input.trim());
+}

@@ -1,5 +1,9 @@
-import { Grid, TextField, Box } from '@mui/material';
+import { Grid, Box, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { Order } from '../types/order';
+import ValidatedTextField from '../components/ValidatedTextField';
+import { isMinLength2, isValidZip } from '@/lib/validate';
+import { US_STATES } from '@/lib/states';
+import { COUNTRIES } from '@/lib/country';
 
 interface BillingInformationProps {
   order: Order;
@@ -14,7 +18,8 @@ export default function BillingInformation({
     <Box sx={{ mt: 2 }}>
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 6}}>
-          <TextField
+          <ValidatedTextField
+            validator={isMinLength2}
             fullWidth
             label="Billing Name"
             value={order?.billingAddressee || ''}
@@ -25,7 +30,8 @@ export default function BillingInformation({
           />
         </Grid>
         <Grid size={{ xs: 12, md: 6}}>
-          <TextField
+          <ValidatedTextField
+            validator={isMinLength2}
             fullWidth
             label="Street Address"
             value={order?.billingStreet1 || ''}
@@ -36,7 +42,8 @@ export default function BillingInformation({
           />
         </Grid>
         <Grid size={{ xs: 12, md: 6}}>
-          <TextField
+          <ValidatedTextField
+            validator={isMinLength2}
             fullWidth
             label="Street Address Line 2"
             value={order?.billingStreet2 || ''}
@@ -47,7 +54,8 @@ export default function BillingInformation({
           />
         </Grid>
         <Grid size={{ xs: 12, md: 6}}>
-          <TextField
+          <ValidatedTextField
+            validator={isMinLength2}
             fullWidth
             label="City"
             value={order?.billingCity || ''}
@@ -58,23 +66,28 @@ export default function BillingInformation({
           />
         </Grid>
         <Grid size={{ xs: 12, md: 3}}>
-          <TextField
-            fullWidth
-            label="State"
-            value={order?.billingState || ''}
-            onChange={(e) => setOrderProp('billingState', e.target.value)}
-            variant="outlined"
-            size="small"
-            required
-            placeholder="CA"
-          />
+          <FormControl fullWidth size="small" required>
+            <InputLabel>State</InputLabel>
+            <Select
+              value={order?.billingState || ''}
+              onChange={(e) => setOrderProp('billingState', e.target.value)}
+              label="State"
+            >
+              {Object.entries(US_STATES).map(([code, name]) => (
+                <MenuItem key={code} value={code}>
+                  {name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Grid>
         <Grid size={{ xs: 12, md: 3}}>
-          <TextField
+          <ValidatedTextField
+            validator={isValidZip}
             fullWidth
             label="Postal Code"
             value={order?.billingZip || ''}
-            onChange={(e) => setOrderProp('billingPostalCode', e.target.value)}
+            onChange={(e) => setOrderProp('billingZip', e.target.value)}
             variant="outlined"
             size="small"
             required
@@ -82,16 +95,20 @@ export default function BillingInformation({
           />
         </Grid>
         <Grid size={{ xs: 12, md: 6}}>
-          <TextField
-            fullWidth
-            label="Country"
-            value={order?.billingCountry || ''}
-            onChange={(e) => setOrderProp('billingCountry', e.target.value)}
-            variant="outlined"
-            size="small"
-            required
-            placeholder="United States"
-          />
+          <FormControl fullWidth size="small" required>
+            <InputLabel>Country</InputLabel>
+            <Select
+              value={order?.billingCountry || 'US'}
+              onChange={(e) => setOrderProp('billingCountry', e.target.value)}
+              label="Country"
+            >
+              {Object.entries(COUNTRIES).map(([code, name]) => (
+                <MenuItem key={code} value={code}>
+                  {name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Grid>
       </Grid>
     </Box>
