@@ -764,6 +764,11 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
       'oneToMany',
       'api::order-room.order-room'
     >;
+    orderStatus: Schema.Attribute.Enumeration<
+      ['received', 'pending', 'confirmed']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'received'>;
     owner: Schema.Attribute.String;
     primary: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;

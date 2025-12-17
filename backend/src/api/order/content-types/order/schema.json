@@ -84,6 +84,16 @@
     },
     "rewardsNumber": {
       "type": "string"
+    },
+    "orderStatus": {
+      "type": "enumeration",
+      "required": true,
+      "default": "received",
+      "enum": [
+        "received",
+        "pending",
+        "confirmed"
+      ]
     }
   }
 }

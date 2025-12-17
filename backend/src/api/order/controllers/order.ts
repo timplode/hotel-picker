@@ -22,7 +22,7 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
           data: {
             ...data,
             hotel: data.selectedHotel || null,
-            state: 'submitted',
+            orderStatus: 'received',
             publishedAt: new Date(),
           },
         });
