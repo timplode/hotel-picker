@@ -15,46 +15,51 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         return ctx.badRequest('Order data is required');
       }
 
-      // Create the order with submitted data
-      const entity = await strapi.entityService.create('api::order.order', {
-        data: {
-          ...data,
-          hotel: data.selectedHotel || null,
-          state: 'submitted',
-          publishedAt: new Date(),
-        },
-      });
+      // Execute all database operations within a transaction
+      const result = await strapi.db.transaction(async ({ trx }) => {
+        // Create the order with submitted data
+        const entity = await strapi.entityService.create('api::order.order', {
+          data: {
+            ...data,
+            hotel: data.selectedHotel || null,
+            state: 'submitted',
+            publishedAt: new Date(),
+          },
+        });
 
-      // Process rooms if they exist
-      if (data.rooms && data.rooms.length > 0) {
-        for (const room of data.rooms) {
-          // Create OrderRoom entry
-          const orderRoom = await strapi.entityService.create('api::order-room.order-room', {
-            data: {
-              order: entity.documentId,
-              type: room.type,
-              arrivalDate: room.arrivalDate,
-              departureDate: room.departureDate
-            },
-          });
+        // Process rooms if they exist
+        if (data.rooms && data.rooms.length > 0) {
+          for (const room of data.rooms) {
+            // Create OrderRoom entry
+            const orderRoom = await strapi.entityService.create('api::order-room.order-room', {
+              data: {
+                order: entity.documentId,
+                type: room.type,
+                arrivalDate: room.arrivalDate,
+                departureDate: room.departureDate
+              },
+            });
 
-        // Process occupants for this room
-          if (room.occupants && room.occupants.length > 0) {
-            for (const occupant of room.occupants) {
-              await strapi.entityService.create('api::order-room-occupant.order-room-occupant', {
-                data: {
-                  orderRoom: orderRoom.documentId,
-                  firstName: occupant.firstName,
-                  lastName: occupant.lastName,
-                },
-              });
+            // Process occupants for this room
+            if (room.occupants && room.occupants.length > 0) {
+              for (const occupant of room.occupants) {
+                await strapi.entityService.create('api::order-room-occupant.order-room-occupant', {
+                  data: {
+                    orderRoom: orderRoom.documentId,
+                    firstName: occupant.firstName,
+                    lastName: occupant.lastName,
+                  },
+                });
+              }
             }
           }
         }
-      }
+
+        return entity;
+      });
 
       // Return the created order
-      const sanitizedEntity = await this.sanitizeOutput(entity, ctx);
+      const sanitizedEntity = await this.sanitizeOutput(result, ctx);
       
       return ctx.send({
         data: sanitizedEntity,
