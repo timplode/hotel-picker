@@ -8,3 +8,14 @@ export function isValidPhoneNumber(input: string): boolean {
   // Check if exactly 10 digits
   return digitsOnly.length >= 10;
 }
+
+export function isValidEmail(input: string): boolean {
+  // Basic email validation using regex
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(input.trim());
+}
+
+export function isMinLength2(input: string): boolean {
+  // Validate text is at least 2 characters long
+  return input.trim().length >= 2;
+}

@@ -26,6 +26,7 @@ import RoomSelector from "./RoomSelector";
 import HotelSelector from "./HotelSelector";
 import HotelPaperwork from "./HotelPaperwork";
 import OrderSummary from "./OrderSummary";
+import { APIHOST } from '../common';
 
 
 
@@ -40,8 +41,7 @@ const NextStepButton = ({ onClick, disabled = false, children }: {
     size="small"
     onClick={onClick}
     disabled={disabled}
-    endIcon={<ArrowForwardIcon size={"small"} />}
-    maxWidth="400px"
+    endIcon={<ArrowForwardIcon fontSize="small" />}
     sx={{ 
       px: 4, 
       py: 0.5,
@@ -62,7 +62,7 @@ const PrevStepButton = ({ onClick, disabled = false, children }: {
     size="small"
     onClick={onClick}
     disabled={disabled}
-    startIcon={<ArrowBackIcon size={"small"} />}
+    startIcon={<ArrowBackIcon fontSize="small" />}
     sx={{ 
       px: 4, 
       py: 0.5,
@@ -90,7 +90,7 @@ export default function Registration() {
         try {
           setLoading(true);
           setError('');
-          const response = await fetch(`http://localhost:1337/api/conferences/${conferenceId}`);
+          const response = await fetch(`${APIHOST}/api/conferences/${conferenceId}`);
           
           if (!response.ok) {
             throw new Error('Failed to fetch conference data');

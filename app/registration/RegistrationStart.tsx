@@ -1,5 +1,6 @@
 import { Conference } from "@/app/types/conference";
 import Button from "@mui/material/Button";
+import { APIHOST } from "../common";
 
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -9,7 +10,7 @@ import CardMedia from "@mui/material/CardMedia";
 
 const Registration = ({ conference }: { conference: Conference }) => <Card>
 
-        <CardMedia component="img" image={`http://localhost:1337${conference.logo?.formats.small?.url}`} alt={conference.longName} />
+        <CardMedia component="img" image={`${APIHOST}${conference.logo?.formats.small?.url}`} alt={conference.longName} />
         <CardHeader title={conference.longName} titleTypographyProps={{ fontSize: "120%" }}/> 
         <CardContent>
             Conference found! Click below to start your registration.

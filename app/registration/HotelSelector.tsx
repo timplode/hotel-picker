@@ -22,6 +22,7 @@ import {
 import { Hotel, HotelResponse } from '../types/hotel';
 import { Conference } from '../types/conference';
 import { Order } from '../types/order';
+import { APIHOST } from '../common';
 
 interface HotelSelectorProps {
   conference: Conference | null;
@@ -50,7 +51,7 @@ export default function HotelSelector({ conference, order, setOrderProp }: Hotel
       setError('');
       
       const response = await fetch(
-        `http://localhost:1337/api/hotels?filters[hotel_conferences][conference][documentId][$eq]=${conference.documentId}&populate=*`
+        `${APIHOST}/api/hotels?filters[hotel_conferences][conference][documentId][$eq]=${conference.documentId}&populate=*`
       );
       
       if (!response.ok) {

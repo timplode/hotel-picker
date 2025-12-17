@@ -1,0 +1,1 @@
+export const APIHOST = process.env.APIHOST || 'http://localhost:8001';

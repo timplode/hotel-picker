@@ -7,7 +7,7 @@ const path = require('path');
  */
 
 // Strapi configuration
-const STRAPI_BASE_URL = 'http://localhost:1337';
+const STRAPI_BASE_URL = process.env.APIHOST || 'http://localhost:1337';
 const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN; // Set this environment variable
 const BATCH_SIZE = 50; // Import in batches to avoid overwhelming the API
 

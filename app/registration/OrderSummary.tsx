@@ -16,6 +16,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Conference } from '../types/conference';
 import { Order } from '../types/order';
 import { Hotel } from '../types/hotel';
+import { APIHOST } from '../common';
 
 interface OrderSummaryProps {
   conference: Conference | null;
@@ -42,7 +43,7 @@ export default function OrderSummary({ conference, order, setOrderProp }: OrderS
       setError('');
       
       const response = await fetch(
-        `http://localhost:1337/api/hotels/${order.selectedHotel}?populate=*`
+        `${APIHOST}/api/hotels/${order.selectedHotel}?populate=*`
       );
       
       if (!response.ok) {
@@ -86,7 +87,7 @@ export default function OrderSummary({ conference, order, setOrderProp }: OrderS
         
             
             
-            <Typography variant="h6">
+            <Typography variant="h6" fontWeight="600">
               {conference.longName}
             </Typography>
         </Box>

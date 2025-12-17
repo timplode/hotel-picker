@@ -1,6 +1,7 @@
 import { Grid, TextField, Box, Typography } from '@mui/material';
 import { Order } from '../types/order';
-import { isValidPhoneNumber } from '../../lib/validate';
+import { isMinLength2, isValidEmail, isValidPhoneNumber } from '../../lib/validate';
+import ValidatedTextField from '../components/ValidatedTextField';
 
 interface OrderFormProps {
   order: Order,
@@ -16,7 +17,8 @@ export default function ContactInformation({
   return (
     <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2, maxWidth: '400px' }}>
      
-          <TextField
+          <ValidatedTextField
+            validator={isMinLength2}
             label="First Name"
             value={order?.contactFirstName}
             onChange={(e) => setOrderProp('contactFirstName', e.target.value)}
@@ -25,7 +27,8 @@ export default function ContactInformation({
             required
           />
         
-          <TextField
+          <ValidatedTextField
+            validator={isMinLength2}
             fullWidth
             label="Last Name"
             value={order?.contactLastName}
@@ -35,7 +38,8 @@ export default function ContactInformation({
             required
           />
       
-          <TextField
+          <ValidatedTextField
+            validator={isValidEmail}
             fullWidth
             label="Email Address"
             type="email"
@@ -44,9 +48,11 @@ export default function ContactInformation({
             variant="outlined"
             size="small"
             required
+            helperText={isValidEmail(order?.contactEmail || "") === false ? 'Please enter a valid email address' : ''}
           />
     
-          <TextField
+          <ValidatedTextField
+            validator={isValidPhoneNumber}
             fullWidth
             label="Mobile Phone"
             type="tel"
@@ -56,7 +62,6 @@ export default function ContactInformation({
             size="small"
             required
             placeholder="(555) 123-4567"
-            error={order?.contactCell !== ""}
             helperText={isValidPhoneNumber(order?.contactCell || "") === false ? 'Please enter a valid 10-digit phone number' : ''}
           />
     </Box>

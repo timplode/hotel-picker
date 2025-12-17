@@ -14,6 +14,7 @@ import {
   Alert,
   CircularProgress
 } from '@mui/material';
+import { APIHOST } from './common';
 
 export default function Home() {
   const [passcode, setPasscode] = useState("");
@@ -59,7 +60,7 @@ export default function Home() {
     try {
       setLoading(true);
       setError("");
-      const response = await fetch(`http://localhost:1337/api/conferences?filters[passcode][$eq]=${passcodeValue}&populate=logo`);
+      const response = await fetch(`${APIHOST}/api/conferences?filters[passcode][$eq]=${passcodeValue}&populate=logo`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch conference data');
