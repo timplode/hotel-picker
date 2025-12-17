@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "order_room_occupants",
+  "info": {
+    "singularName": "order-room-occupant",
+    "pluralName": "order-room-occupants",
+    "displayName": "OrderRoomOccupant"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "firstName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "orderRoom": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::order-room.order-room",
+      "inversedBy": "order_room_occupants"
+    }
+  }
+}

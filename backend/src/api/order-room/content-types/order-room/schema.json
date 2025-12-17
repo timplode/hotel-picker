@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "order_rooms",
+  "info": {
+    "singularName": "order-room",
+    "pluralName": "order-rooms",
+    "displayName": "OrderRoom"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "order": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::order.order",
+      "inversedBy": "order_rooms"
+    },
+    "type": {
+      "type": "enumeration",
+      "required": true,
+      "default": "student",
+      "enum": [
+        "student",
+        "chaperone"
+      ]
+    },
+    "arrivalDate": {
+      "type": "date",
+      "required": true
+    },
+    "departureDate": {
+      "type": "date"
+    },
+    "order_room_occupants": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order-room-occupant.order-room-occupant",
+      "mappedBy": "orderRoom"
+    }
+  }
+}

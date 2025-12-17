@@ -11,12 +11,7 @@ import {
   Grid,
   Chip,
   CircularProgress,
-  Alert,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  SelectChangeEvent
+  Alert
 } from '@mui/material';
 
 import { Hotel, HotelResponse } from '../types/hotel';
@@ -71,6 +66,7 @@ export default function HotelSelector({ conference, order, setOrderProp }: Hotel
   const handleHotelSelect = (hotelId: string) => {
     setSelectedHotel(hotelId);
     setOrderProp('selectedHotel', hotelId);
+    console.log('Selected hotel ID:', hotelId);
   };
 
 
@@ -174,12 +170,6 @@ export default function HotelSelector({ conference, order, setOrderProp }: Hotel
                 <Typography variant="h6" component="h4" gutterBottom>
                   {hotel.longName}
                 </Typography>
-                
-                {hotel.amenities && (
-                  <Typography variant="body2" color="text.secondary" paragraph>
-                    {hotel.amenities}
-                  </Typography>
-                )}
 
                 {hotel.addressCity && (
                   <Typography variant="body2" color="text.secondary" paragraph>

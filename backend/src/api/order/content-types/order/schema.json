@@ -76,6 +76,17 @@
       "type": "boolean",
       "required": true,
       "default": false
+    },
+    "order_rooms": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order-room.order-room",
+      "mappedBy": "order"
+    },
+    "hotel": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::hotel.hotel"
     }
   }
 }

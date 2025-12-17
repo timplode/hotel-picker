@@ -660,6 +660,77 @@ export interface ApiHotelHotel extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiOrderRoomOccupantOrderRoomOccupant
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'order_room_occupants';
+  info: {
+    displayName: 'OrderRoomOccupant';
+    pluralName: 'order-room-occupants';
+    singularName: 'order-room-occupant';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    firstName: Schema.Attribute.String;
+    lastName: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::order-room-occupant.order-room-occupant'
+    > &
+      Schema.Attribute.Private;
+    orderRoom: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::order-room.order-room'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiOrderRoomOrderRoom extends Struct.CollectionTypeSchema {
+  collectionName: 'order_rooms';
+  info: {
+    displayName: 'OrderRoom';
+    pluralName: 'order-rooms';
+    singularName: 'order-room';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    arrivalDate: Schema.Attribute.Date & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    departureDate: Schema.Attribute.Date;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::order-room.order-room'
+    > &
+      Schema.Attribute.Private;
+    order: Schema.Attribute.Relation<'manyToOne', 'api::order.order'>;
+    order_room_occupants: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::order-room-occupant.order-room-occupant'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    type: Schema.Attribute.Enumeration<['student', 'chaperone']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'student'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
   collectionName: 'orders';
   info: {
@@ -684,10 +755,15 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    hotel: Schema.Attribute.Relation<'oneToOne', 'api::hotel.hotel'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::order.order'> &
       Schema.Attribute.Private;
     notesForHotel: Schema.Attribute.Text;
+    order_rooms: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::order-room.order-room'
+    >;
     owner: Schema.Attribute.String;
     primary: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
@@ -1259,6 +1335,8 @@ declare module '@strapi/strapi' {
       'api::conference.conference': ApiConferenceConference;
       'api::hotel-conference.hotel-conference': ApiHotelConferenceHotelConference;
       'api::hotel.hotel': ApiHotelHotel;
+      'api::order-room-occupant.order-room-occupant': ApiOrderRoomOccupantOrderRoomOccupant;
+      'api::order-room.order-room': ApiOrderRoomOrderRoom;
       'api::order.order': ApiOrderOrder;
       'api::user-segment.user-segment': ApiUserSegmentUserSegment;
       'plugin::content-releases.release': PluginContentReleasesRelease;

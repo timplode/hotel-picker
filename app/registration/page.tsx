@@ -146,9 +146,38 @@ export default function Registration() {
     }
     ];
 
-  const handleNextStep = () => {
+  const handleNextStep = async () => {
     if (activeStep < steps.length - 1) {
       setActiveStep(activeStep + 1);
+    } else if (activeStep === steps.length - 1) {
+      // Final step: submit the registration
+      try {
+        setLoading(true);
+        setError('');
+        
+        const response = await fetch(`${APIHOST}/api/orders/submit`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ data: order }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to submit order');
+        }
+
+        const result = await response.json();
+        console.log('Order submitted successfully:', result);
+        
+        // TODO: Redirect to success page or show success message
+        
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to submit order');
+        console.error('Order submission error:', err);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
