@@ -17,6 +17,7 @@ import { Conference } from '../types/conference';
 import { Order } from '../types/order';
 import { APIHOST } from '../common';
 import { ConferenceHotel } from '../types/conferenceHotel';
+import { Occupant } from '../types/occupant';
 
 interface OrderSummaryProps {
   conference: Conference | null;
@@ -194,14 +195,14 @@ export default function OrderSummary({ conference, order, setOrderProp }: OrderS
             <CheckCircleIcon color="success" sx={{ mr: 1 }} />
             Rooms & Occupants
           </Typography>
-          
+         
           <Box sx={{ display: 'grid', gap: 2 }}>
-            {order.rooms && order.rooms.length > 0 ? (
+            {order.order_rooms && order.order_rooms.length > 0 ? (
               <>
                 <Typography variant="body2">
-                  <strong>Total Rooms:</strong> {order.rooms.length}
+                  <strong>Total Rooms:</strong> {order.order_rooms.length}
                 </Typography>
-                {order.rooms.map((room, index) => (
+                {order.order_rooms.map((room, index) => (
                   <Box key={index} sx={{ pl: 2, borderLeft: '2px solid', borderColor: 'primary.light', ml: 1 }}>
                     <Typography variant="body2" fontWeight="600">
                       Room {index + 1}
@@ -225,12 +226,12 @@ export default function OrderSummary({ conference, order, setOrderProp }: OrderS
                       </Typography>
                     )}
 
-                    {room.occupants && room.occupants.length > 0 && (
+                    {room.order_room_occupants && room.order_room_occupants.length > 0 && (
                       <>
                         <Typography variant="body2" sx={{ mt: 0.5 }}>
-                          <strong>Occupants ({room.occupants.length}):</strong>
+                          <strong>Occupants ({room.order_room_occupants.length}):</strong>
                         </Typography>
-                        {room.occupants.map((occupant, occupantIndex) => (
+                        {room.order_room_occupants.map((occupant: Occupant, occupantIndex: number) => (
                           <Typography key={occupantIndex} variant="body2" sx={{ ml: 2 }}>
                             • {occupant.firstName} {occupant.lastName}
                          

@@ -4,6 +4,8 @@
 
 import { factories } from '@strapi/strapi';
 import { Order} from '../../../lib/types/order';
+import { Room } from '../../../lib/types/room';
+import { Occupant } from '../../../lib/types/occupant';
 
 export default factories.createCoreController('api::order.order', ({ strapi }) => ({
   async submit(ctx) {
@@ -21,15 +23,18 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         const entity = await strapi.entityService.create('api::order.order', {
           data: {
             ...data,
+            order_rooms: undefined,
+            roomCount: data.order_rooms ? data.order_rooms.length : 0,
+            occupantCount: data.order_rooms ? data.order_rooms.reduce((sum, room: Room) => sum + (room.order_room_occupants ? room.order_room_occupants.length : 0), 0) : 0,
             conference_hotel: data.selectedHotel || null,
-            orderStatus: 'received',
-            publishedAt: new Date(),
+            orderStatus: 'received'
           },
         });
 
         // Process rooms if they exist
-        if (data.rooms && data.rooms.length > 0) {
-          for (const room of data.rooms) {
+        if (data.order_rooms && data.order_rooms.length > 0) {
+          let room: Room;
+          for (room of data.order_rooms) {
             // Create OrderRoom entry
             const orderRoom = await strapi.entityService.create('api::order-room.order-room', {
               data: {
@@ -41,8 +46,9 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
             });
 
             // Process occupants for this room
-            if (room.occupants && room.occupants.length > 0) {
-              for (const occupant of room.occupants) {
+            if (room.order_room_occupants && room.order_room_occupants.length > 0) {
+              let occupant: Occupant
+              for (occupant of room.order_room_occupants) {
                 await strapi.entityService.create('api::order-room-occupant.order-room-occupant', {
                   data: {
                     orderRoom: orderRoom.documentId,

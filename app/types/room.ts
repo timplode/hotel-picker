@@ -5,5 +5,5 @@ export interface Room {
   type: 'student' | 'chaperone';
   arrivalDate: string;
   departureDate: string;
-  occupants: Occupant[];
+  order_room_occupants: Occupant[];
 }

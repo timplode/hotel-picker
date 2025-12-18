@@ -9,21 +9,20 @@ import {
   Button,
   Alert
 } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AdminTabs from '../components/AdminTabs';
-import Orders from './Orders';
+import Summary from '../components/Summary';
 
-export default function OrdersPage() {
+export default function SummaryPage() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check authentication
     const token = localStorage.getItem('adminToken');
     if (token) {
       setIsAuthenticated(true);
     } else {
-      // Redirect to admin login if not authenticated
       router.push('/admin');
     }
     setLoading(false);
@@ -62,10 +61,10 @@ export default function OrdersPage() {
           </Button>
         </Box>
 
-        <AdminTabs currentPath="/admin/orders" />
+        <AdminTabs currentPath="/admin/summary" />
         
         <Box sx={{ mt: 3 }}>
-          <Orders />
+          <Summary />
         </Box>
       </Container>
     </Box>

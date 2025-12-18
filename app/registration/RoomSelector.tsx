@@ -32,36 +32,36 @@ interface RoomSelectorProps {
 }
 
 export default function RoomSelector({ conference, setOrderProp }: RoomSelectorProps) {
-  const [rooms, setRooms] = useState<Room[]>([
+  const [order_rooms, setOrderRooms] = useState<Room[]>([
     {
       id: '1',
       type: 'student',
       arrivalDate: conference?.defaultArrivalDate || '',
       departureDate: conference?.defaultDepartureDate || '',
-      occupants: []
+      order_room_occupants: []
     }
   ]);
 
   const handleRoomChange = (roomId: string, field: keyof Room, value: any) => {
-    const updatedRooms = rooms.map(room =>
+    const updatedOrderRooms = order_rooms.map(room =>
       room.id === roomId ? { ...room, [field]: value } : room
     );
-    setRooms(updatedRooms);
-    setOrderProp?.('rooms', updatedRooms);
+    setOrderRooms(updatedOrderRooms);
+    setOrderProp?.('order_rooms', updatedOrderRooms);
   };
 
   const handleOccupantChange = (roomId: string, occupantId: string, field: keyof Occupant, value: string) => {
-    const updatedRooms = rooms.map(room => {
+    const updatedOrderRooms = order_rooms.map(room => {
       if (room.id === roomId) {
-        const updatedOccupants = room.occupants.map(occupant =>
+        const updatedOccupants = room.order_room_occupants.map((occupant: Occupant) =>
           occupant.id === occupantId ? { ...occupant, [field]: value } : occupant
         );
-        return { ...room, occupants: updatedOccupants };
+        return { ...room, order_room_occupants: updatedOccupants };
       }
       return room;
     });
-    setRooms(updatedRooms);
-    setOrderProp?.('rooms', updatedRooms);
+    setOrderRooms(updatedOrderRooms);
+    setOrderProp?.('order_rooms', updatedOrderRooms);
   };
 
   const addRoom = () => {
@@ -70,19 +70,19 @@ export default function RoomSelector({ conference, setOrderProp }: RoomSelectorP
       type: 'student',
       arrivalDate: conference?.defaultArrivalDate || '',
       departureDate: conference?.defaultDepartureDate || '',
-      occupants: []
+      order_room_occupants: []
     };
-    const updatedRooms = [...rooms, newRoom];
-    setRooms(updatedRooms);
-    setOrderProp?.('rooms', updatedRooms);
+    const updatedRooms = [...order_rooms, newRoom];
+    setOrderRooms(updatedRooms);
+    setOrderProp?.('orderrooms', updatedRooms);
   };
 
   const removeRoom = (roomId: string) => {
-    const room = rooms.find(r => r.id === roomId);
-    if (room && room.occupants.length === 0) {
-      const updatedRooms = rooms.filter(r => r.id !== roomId);
-      setRooms(updatedRooms);
-      setOrderProp?.('rooms', updatedRooms);
+    const room = order_rooms.find(r => r.id === roomId);
+    if (room && room.order_room_occupants.length === 0) {
+      const updatedOrderRooms = order_rooms.filter(r => r.id !== roomId);
+      setOrderRooms(updatedOrderRooms);
+      setOrderProp?.('orderrooms', updatedOrderRooms);
     }
   };
 
@@ -92,17 +92,17 @@ export default function RoomSelector({ conference, setOrderProp }: RoomSelectorP
       firstName: '',
       lastName: ''
     };
-    handleRoomChange(roomId, 'occupants', [
-      ...rooms.find(r => r.id === roomId)?.occupants || [],
+    handleRoomChange(roomId, 'order_room_occupants', [
+      ...order_rooms.find(r => r.id === roomId)?.order_room_occupants || [],
       newOccupant
     ]);
   };
 
   const removeOccupant = (roomId: string, occupantId: string) => {
-    const room = rooms.find(r => r.id === roomId);
+    const room = order_rooms.find(r => r.id === roomId);
     if (room) {
-      const updatedOccupants = room.occupants.filter(o => o.id !== occupantId);
-      handleRoomChange(roomId, 'occupants', updatedOccupants);
+      const updatedOccupants = room.order_room_occupants.filter(o => o.id !== occupantId);
+      handleRoomChange(roomId, 'order_room_occupants', updatedOccupants);
     }
   };
 
@@ -124,14 +124,14 @@ export default function RoomSelector({ conference, setOrderProp }: RoomSelectorP
         </Box>
       </Box>
 
-      {rooms.map((room, index) => (
+      {order_rooms.map((room, index) => (
         <Card key={room.id} sx={{ mb: 3, border: '1px solid', borderColor: 'divider' }}>
           <CardContent>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
               <Typography variant="h6" component="h4">
                 Room {index + 1}
               </Typography>
-              {rooms.length > 1 && room.occupants.length === 0 && (
+              {order_rooms.length > 1 && room.order_room_occupants.length === 0 && (
                 <IconButton
                   onClick={() => removeRoom(room.id)}
                   color="error"
@@ -204,13 +204,13 @@ export default function RoomSelector({ conference, setOrderProp }: RoomSelectorP
               </Button>
             </Box>
 
-            {room.occupants.length === 0 ? (
+            {room.order_room_occupants.length === 0 ? (
               <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
                 No occupants added yet. Click "Add Occupant" to add people to this room.
               </Typography>
             ) : (
               <Grid container spacing={2}>
-                {room.occupants.map((occupant) => (
+                {room.order_room_occupants.map((occupant) => (
                   <Grid size={{ xs: 12 }} key={occupant.id}>
                     <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                       <TextField

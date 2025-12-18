@@ -763,6 +763,9 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::order.order'> &
       Schema.Attribute.Private;
     notesForHotel: Schema.Attribute.Text;
+    occupantCount: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<1>;
     order_rooms: Schema.Attribute.Relation<
       'oneToMany',
       'api::order-room.order-room'
@@ -782,6 +785,9 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<false>;
     rewardsNumber: Schema.Attribute.String;
+    roomCount: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<1>;
     segment: Schema.Attribute.String;
     state: Schema.Attribute.String;
     studentsShareBeds: Schema.Attribute.Boolean &

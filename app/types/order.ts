@@ -32,9 +32,11 @@ export interface Order {
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
-  rooms?: Room[];
+  order_rooms?: Room[];
   conference_hotel?: ConferenceHotel | null;
   orderStatus: string;
+  roomCount?: number;
+  occupantCount?: number;
 }
 
 export type OrderResponse = {

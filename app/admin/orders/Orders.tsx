@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Paper,
   Typography,
@@ -25,6 +26,7 @@ import { Order } from '../../types/order';
 type SortOrder = 'asc' | 'desc';
 
 export default function Orders() {
+  const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -91,6 +93,10 @@ export default function Orders() {
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  const handleOrderClick = (documentId: string) => {
+    router.push(`/admin/order?orderId=${documentId}`);
   };
 
   const formatDate = (dateString: string) => {
@@ -161,6 +167,8 @@ export default function Orders() {
               </TableCell>
               <TableCell>Conference</TableCell>
               <TableCell>Hotel</TableCell>
+              <TableCell>Rooms</TableCell>
+              <TableCell>Occupants</TableCell>
               <TableCell>
                 <TableSortLabel
                   active={orderBy === 'createdAt'}
@@ -184,7 +192,12 @@ export default function Orders() {
           </TableHead>
           <TableBody>
             {orders.map((order) => (
-              <TableRow key={order.documentId} hover>
+              <TableRow 
+                key={order.documentId} 
+                hover 
+                onClick={() => handleOrderClick(order.documentId)}
+                sx={{ cursor: 'pointer' }}
+              >
                 <TableCell>
                   <Typography variant="body2" fontWeight="medium">
                     {order.contactFirstName} {order.contactLastName}
@@ -203,6 +216,16 @@ export default function Orders() {
                 <TableCell>
                   <Typography variant="body2">
                     {order.conference_hotel?.hotel?.longName || 'Not selected'}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="body2">
+                    {order.roomCount || 0}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="body2">
+                    {order.occupantCount || 0}
                   </Typography>
                 </TableCell>
                 <TableCell>

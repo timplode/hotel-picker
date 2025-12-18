@@ -15,7 +15,7 @@ import {
   TableRow,
   Chip
 } from '@mui/material';
-import { APIHOST } from '../common';
+import { APIHOST } from '../../common';
 
 interface Conference {
   id: number;
@@ -30,7 +30,7 @@ interface ConferenceStats {
   orderCount: number;
 }
 
-export default function Statistics() {
+export default function Summary() {
   const [stats, setStats] = useState<ConferenceStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -50,7 +50,7 @@ export default function Statistics() {
       }
 
       // Fetch conferences
-      const conferencesResponse = await fetch(`${APIHOST}/api/conferences`, {
+      const conferencesResponse = await fetch(`${APIHOST}/api/stats/conferences`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -129,7 +129,7 @@ export default function Statistics() {
   return (
     <Paper sx={{ p: 3 }}>
       <Typography variant="h6" gutterBottom>
-        Conference Statistics
+        Dashboard
       </Typography>
 
       <Box sx={{ mb: 3 }}>

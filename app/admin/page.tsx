@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { APIHOST } from '../common';
 import AdminTabs from './components/AdminTabs';
-import Statistics from './Statistics';
+import Summary from './components/Summary';
 
 interface User {
   id: number;
@@ -170,7 +170,7 @@ export default function AdminPage() {
         <AdminTabs currentPath="/admin" />
         
         <Box sx={{ mt: 3 }}>
-          <Statistics />
+          <Summary />
         </Box>
       </Container>
     </Box>

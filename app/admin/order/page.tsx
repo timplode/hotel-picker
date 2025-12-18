@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Container,
   Box,
@@ -11,10 +11,12 @@ import {
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AdminTabs from '../components/AdminTabs';
-import Statistics from '../Statistics';
+import OrderDetail from './Order';
 
-export default function StatisticsPage() {
+export default function OrderPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get('orderId');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -46,13 +48,29 @@ export default function StatisticsPage() {
     );
   }
 
+  if (!orderId) {
+    return (
+      <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Alert severity="error">
+          Order ID is required. Please provide an order ID in the URL.
+        </Alert>
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ minHeight: '100vh', py: 4 }}>
       <Container maxWidth="lg">
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h3" component="h1">
-            Admin Dashboard
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Button
+              startIcon={<ArrowBackIcon />}
+              onClick={() => router.push('/admin/orders')}
+              sx={{ mr: 2 }}
+            >
+              Back to Orders
+            </Button>
+          </Box>
           <Button variant="outlined" onClick={() => {
             localStorage.removeItem('adminToken');
             router.push('/admin');
@@ -61,10 +79,10 @@ export default function StatisticsPage() {
           </Button>
         </Box>
 
-        <AdminTabs currentPath="/admin" />
+        <AdminTabs currentPath="/admin/orders" />
         
         <Box sx={{ mt: 3 }}>
-          <Statistics />
+          <OrderDetail orderId={orderId} />
         </Box>
       </Container>
     </Box>

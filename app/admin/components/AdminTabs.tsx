@@ -12,7 +12,7 @@ export default function AdminTabs({ currentPath }: AdminTabsProps) {
   const pathname = usePathname();
 
   const tabs = [
-    { label: 'Statistics', path: '/admin' },
+    { label: 'Summary', path: '/admin' },
     { label: 'Orders', path: '/admin/orders' },
     { label: 'Conferences', path: '/admin/conferences' },
     { label: 'Exports', path: '/admin/exports' }

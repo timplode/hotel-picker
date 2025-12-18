@@ -94,6 +94,16 @@
         "pending",
         "confirmed"
       ]
+    },
+    "roomCount": {
+      "type": "integer",
+      "required": true,
+      "default": 1
+    },
+    "occupantCount": {
+      "type": "integer",
+      "required": true,
+      "default": 1
     }
   }
 }
