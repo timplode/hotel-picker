@@ -12,7 +12,6 @@ import {
   Divider
 } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import EmailIcon from '@mui/icons-material/Email';
 import PrintIcon from '@mui/icons-material/Print';
 import { Order } from "../types/order";
 import { Conference } from "../types/conference";
@@ -29,7 +28,7 @@ export default function Confirmation({ order, conference, orderResponse }: Confi
   };
 
   const confirmationNumber = orderResponse?.id || orderResponse?.documentId || 'N/A';
-
+console.log('Rendering Confirmation with orderResponse:', orderResponse);
   return (
     <Box sx={{ p: 3, textAlign: 'center' }}>
       {/* Success Header */}
@@ -51,14 +50,10 @@ export default function Confirmation({ order, conference, orderResponse }: Confi
 
       {/* Confirmation Details */}
       <Paper sx={{ p: 3, mb: 3, textAlign: 'left' }}>
-        <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
-          <CheckCircleOutlineIcon color="success" sx={{ mr: 1 }} />
-          Confirmation Details
-        </Typography>
         
         <Box sx={{ mt: 2, display: 'grid', gap: 2 }}>
           <Typography variant="body1">
-            <strong>Confirmation Number:</strong> {confirmationNumber}
+            <strong>Confirmation Number: {orderResponse?.data.confirmation}</strong>
           </Typography>
           
           {conference && (
@@ -102,13 +97,6 @@ export default function Confirmation({ order, conference, orderResponse }: Confi
 
       {/* Action Buttons */}
       <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
-        <Button
-          variant="contained"
-          startIcon={<EmailIcon />}
-          onClick={() => window.location.href = `mailto:${order.contactEmail}?subject=Conference Registration Confirmation&body=Your registration has been confirmed. Confirmation Number: ${confirmationNumber}`}
-        >
-          Email Confirmation
-        </Button>
         
         <Button
           variant="outlined"

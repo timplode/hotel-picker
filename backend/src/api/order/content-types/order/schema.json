@@ -104,6 +104,12 @@
       "type": "integer",
       "required": true,
       "default": 1
+    },
+    "confirmation": {
+      "type": "string",
+      "maxLength": 8,
+      "required": true,
+      "unique": true
     }
   }
 }

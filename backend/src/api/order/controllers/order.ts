@@ -7,6 +7,15 @@ import { Order} from '../../../lib/types/order';
 import { Room } from '../../../lib/types/room';
 import { Occupant } from '../../../lib/types/occupant';
 
+const generateConfirmationHash = (): string => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < 8; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+};
+
 export default factories.createCoreController('api::order.order', ({ strapi }) => ({
   async submit(ctx) {
     try {
@@ -17,12 +26,15 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         return ctx.badRequest('Order data is required');
       }
 
+      const confirmation = generateConfirmationHash();
+
       // Execute all database operations within a transaction
       const result = await strapi.db.transaction(async ({ trx }) => {
         // Create the order with submitted data
         const entity = await strapi.entityService.create('api::order.order', {
           data: {
             ...data,
+            confirmation: confirmation,
             order_rooms: undefined,
             roomCount: data.order_rooms ? data.order_rooms.length : 0,
             occupantCount: data.order_rooms ? data.order_rooms.reduce((sum, room: Room) => sum + (room.order_room_occupants ? room.order_room_occupants.length : 0), 0) : 0,

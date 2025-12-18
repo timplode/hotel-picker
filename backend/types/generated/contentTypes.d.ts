@@ -751,6 +751,12 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
       'oneToOne',
       'api::conference-hotel.conference-hotel'
     >;
+    confirmation: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 8;
+      }>;
     confirmationNumbers: Schema.Attribute.JSON;
     contactCell: Schema.Attribute.String;
     contactEmail: Schema.Attribute.String;
