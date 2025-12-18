@@ -3,9 +3,9 @@
  */
 
 import { factories } from '@strapi/strapi';
-import { Order} from '../../../lib/types/order';
-import { Room } from '../../../lib/types/room';
-import { Occupant } from '../../../lib/types/occupant';
+import { Order} from '../../../frontend_types/order';
+import { Room } from '../../../frontend_types/room';
+import { Occupant } from '../../../frontend_types/occupant';
 
 const generateConfirmationHash = (): string => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -19,7 +19,7 @@ const generateConfirmationHash = (): string => {
 export default factories.createCoreController('api::order.order', ({ strapi }) => ({
   async submit(ctx) {
     try {
-      
+
       const { data }: { data: Order } = ctx.request.body;
       
       // Validate required fields
