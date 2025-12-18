@@ -27,6 +27,7 @@ import TransportationSelector from "./TransportationSelector";
 import HotelSelector from "./HotelSelector";
 import HotelPaperwork from "./HotelPaperwork";
 import OrderSummary from "./OrderSummary";
+import Confirmation from "./Confirmation";
 import { APIHOST } from '../common';
 
 
@@ -81,6 +82,7 @@ export default function Registration() {
   const [conference, setConference] = useState<Conference | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [orderResponse, setOrderResponse] = useState<any>(null);
   
   const searchParams = useSearchParams();
   const conferenceId = searchParams.get('conferenceId');
@@ -148,14 +150,18 @@ export default function Registration() {
     {
         label: 'Review & Confirm',
         content: <OrderSummary order={order} setOrderProp={setOrderProp} conference={conference} />
+    },
+    {
+        label: 'Confirmation',
+        content: <Confirmation order={order} conference={conference} orderResponse={orderResponse} />
     }
     ];
 
   const handleNextStep = async () => {
-    if (activeStep < steps.length - 1) {
+    if (activeStep < steps.length - 2) {
       setActiveStep(activeStep + 1);
-    } else if (activeStep === steps.length - 1) {
-      // Final step: submit the registration
+    } else if (activeStep === steps.length - 2) {
+      // Submit the registration before showing confirmation
       try {
         setLoading(true);
         setError('');
@@ -174,8 +180,10 @@ export default function Registration() {
 
         const result = await response.json();
         console.log('Order submitted successfully:', result);
+        setOrderResponse(result);
         
-        // TODO: Redirect to success page or show success message
+        // Move to confirmation step
+        setActiveStep(activeStep + 1);
         
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to submit order');
@@ -187,7 +195,8 @@ export default function Registration() {
   };
 
   const handlePreviousStep = () => {
-    if (activeStep > 0) {
+    // Don't allow going back from confirmation step
+    if (activeStep > 0 && activeStep < steps.length - 1) {
       setActiveStep(activeStep - 1);
     }
   };
@@ -239,15 +248,20 @@ export default function Registration() {
                 </StepLabel>
                 <StepContent>
                   {step.content}
-                  <PrevStepButton 
-                    onClick={handlePreviousStep}
-                    disabled={activeStep === 0}
-                  />
-                  <NextStepButton 
-                    onClick={handleNextStep}
-                  >
-                    {activeStep === steps.length - 1 ? 'Complete Registration' : 'Next Step'}
-                  </NextStepButton>
+                  {activeStep < steps.length - 1 && (
+                    <>
+                      <PrevStepButton 
+                        onClick={handlePreviousStep}
+                        disabled={activeStep === 0}
+                      />
+                      <NextStepButton 
+                        onClick={handleNextStep}
+                        disabled={loading}
+                      >
+                        {activeStep === steps.length - 2 ? 'Complete Registration' : 'Next Step'}
+                      </NextStepButton>
+                    </>
+                  )}
                 </StepContent>
               </Step>
             ))}
