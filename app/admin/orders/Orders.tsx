@@ -167,6 +167,15 @@ export default function Orders() {
               </TableCell>
               <TableCell>Conference</TableCell>
               <TableCell>Hotel</TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'confirmation'}
+                  direction={orderBy === 'confirmation' ? order : 'asc'}
+                  onClick={() => handleRequestSort('confirmation')}
+                >
+                  Confirmation
+                </TableSortLabel>
+              </TableCell>
               <TableCell>Rooms</TableCell>
               <TableCell>Occupants</TableCell>
               <TableCell>
@@ -216,6 +225,11 @@ export default function Orders() {
                 <TableCell>
                   <Typography variant="body2">
                     {order.conference_hotel?.hotel?.longName || 'Not selected'}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="body2" fontFamily="monospace">
+                    {order.confirmation || 'N/A'}
                   </Typography>
                 </TableCell>
                 <TableCell>

@@ -11,6 +11,7 @@ export interface Order {
   billingStreet1: string | null;
   billingStreet2: string | null;
   billingZip: string | null;
+  confirmation: string | null;
   confirmationNumbers: string | null;
   contactCell: string | null;
   contactEmail: string | null;

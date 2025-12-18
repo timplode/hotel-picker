@@ -123,6 +123,9 @@ export default function OrderDetail({ orderId }: OrderDetailProps) {
         <Typography variant="body2" color="text.secondary" gutterBottom>
           Order ID: {order.documentId} 
         </Typography>
+        <Typography variant="body2" color="text.secondary" gutterBottom>
+          Confirmation: {order.confirmation} 
+        </Typography>
         <Typography variant="body2" color="text.secondary">
           <strong>Created:</strong> {formatDateTime(order.createdAt)}
         </Typography>

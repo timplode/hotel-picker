@@ -25,7 +25,7 @@ export default function AdminTabs({ currentPath }: AdminTabsProps) {
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     const targetPath = tabs[newValue]?.path;
-    if (targetPath && targetPath !== currentPath) {
+    if (targetPath) {
       router.push(targetPath);
     }
   };
@@ -39,7 +39,7 @@ export default function AdminTabs({ currentPath }: AdminTabsProps) {
         sx={{ borderBottom: 1, borderColor: 'divider' }}
       >
         {tabs.map((tab, index) => (
-          <Tab key={index} label={tab.label} />
+          <Tab key={index} label={tab.label} onClick={() => router.push(tab.path)} />
         ))}
       </Tabs>
     </Paper>
