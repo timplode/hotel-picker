@@ -17,8 +17,12 @@ import {
   Chip,
   Avatar,
   TableSortLabel,
-  TablePagination
+  TablePagination,
+  TextField,
+  InputAdornment,
+  Button
 } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import { APIHOST } from '../../common';
 import { Hotel } from '../../types/hotel';
 import { Order } from '../../types/order';
@@ -32,13 +36,25 @@ export default function Orders() {
   const [error, setError] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [orderBy, setOrderBy] = useState<keyof Order>('updatedAt');
+  const [orderBy, setOrderBy] = useState<keyof Order>('createdAt');
   const [order, setOrder] = useState<SortOrder>('desc');
   const [total, setTotal] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchOrders();
   }, [page, rowsPerPage, orderBy, order]);
+
+  const handleSearch = () => {
+    setPage(0); // Reset to first page when searching
+    fetchOrders();
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setPage(0);
+    fetchOrders();
+  };
 
   const fetchOrders = async () => {
     console.log("Fetching orders...")
@@ -51,8 +67,15 @@ export default function Orders() {
         throw new Error('No authentication token found');
       }
 
+      // Build search filters
+      let searchFilters = '';
+      if (searchQuery.trim()) {
+        const query = encodeURIComponent(searchQuery.trim());
+        searchFilters = `&filters[$or][0][confirmation][$containsi]=${query}&filters[$or][1][contactEmail][$containsi]=${query}&filters[$or][2][contactFirstName][$containsi]=${query}&filters[$or][3][contactLastName][$containsi]=${query}&filters[$or][4][billingAddressee][$containsi]=${query}`;
+      }
+
       const response = await fetch(
-        `${APIHOST}/api/orders?sort=${orderBy}:${order}&pagination[page]=${page + 1}&pagination[pageSize]=${rowsPerPage}&populate[0]=conference_hotel.hotel&populate[1]=conference_hotel.conference`,
+        `${APIHOST}/api/orders?sort=${orderBy}:${order}&pagination[page]=${page + 1}&pagination[pageSize]=${rowsPerPage}&populate[0]=conference_hotel.hotel&populate[1]=conference_hotel.conference${searchFilters}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -139,9 +162,41 @@ export default function Orders() {
       <Typography variant="h6" gutterBottom>
         Recent Orders
       </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Orders with pagination and sorting
-      </Typography>
+
+      <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+        <TextField
+          fullWidth
+          variant="outlined"
+          placeholder="Search orders by confirmation, email, name, or billing address..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Button
+          variant="contained"
+          onClick={handleSearch}
+          disabled={!searchQuery.trim()}
+          sx={{ minWidth: 100 }}
+        >
+          Search
+        </Button>
+        {searchQuery && (
+          <Button
+            variant="outlined"
+            onClick={handleClearSearch}
+            sx={{ minWidth: 80 }}
+          >
+            Clear
+          </Button>
+        )}
+      </Box>
 
       <TableContainer>
         <Table>
