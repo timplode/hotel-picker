@@ -19,6 +19,7 @@ const generateConfirmationHash = (): string => {
 export default factories.createCoreController('api::order.order', ({ strapi }) => ({
   async submit(ctx) {
     try {
+      
       const { data }: { data: Order } = ctx.request.body;
       
       // Validate required fields
