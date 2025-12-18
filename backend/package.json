@@ -12,6 +12,7 @@
     "start": "strapi start",
     "strapi": "strapi",
     "dump": "strapi export -- --file temp/strapi-init --no-encrypt --no-compress",
+    "import": "npm run strapi import -- -ftemp/strapi-init.tar ",
     "upgrade": "npx @strapi/upgrade latest",
     "upgrade:dry": "npx @strapi/upgrade latest --dry"
   },
