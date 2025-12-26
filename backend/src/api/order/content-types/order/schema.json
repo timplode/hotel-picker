@@ -110,6 +110,12 @@
       "maxLength": 8,
       "required": true,
       "unique": true
+    },
+    "conference_hotel_room_reservartions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::conference-hotel-room-hold.conference-hotel-room-hold",
+      "mappedBy": "order"
     }
   }
 }

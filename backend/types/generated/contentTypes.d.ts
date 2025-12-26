@@ -512,6 +512,90 @@ export interface ApiConferenceGroupConferenceGroup
   };
 }
 
+export interface ApiConferenceHotelRoomHoldConferenceHotelRoomHold
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'conference_hotel_room_holds';
+  info: {
+    displayName: 'ConferenceHotelRoomReservartion';
+    pluralName: 'conference-hotel-room-holds';
+    singularName: 'conference-hotel-room-hold';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    conference_hotel_room: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::conference-hotel-room.conference-hotel-room'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::conference-hotel-room-hold.conference-hotel-room-hold'
+    > &
+      Schema.Attribute.Private;
+    order: Schema.Attribute.Relation<'manyToOne', 'api::order.order'>;
+    publishedAt: Schema.Attribute.DateTime;
+    reservationStatus: Schema.Attribute.Enumeration<
+      ['hold', 'ordered', 'confirmed', 'cancelled']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'hold'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiConferenceHotelRoomConferenceHotelRoom
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'conference_hotel_rooms';
+  info: {
+    displayName: 'ConferenceHotelRoom';
+    pluralName: 'conference-hotel-rooms';
+    singularName: 'conference-hotel-room';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    blockTotal: Schema.Attribute.Integer & Schema.Attribute.Required;
+    conference_hotel: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::conference-hotel.conference-hotel'
+    >;
+    conference_hotel_room_reservartions: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::conference-hotel-room-hold.conference-hotel-room-hold'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    dailyRate: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::conference-hotel-room.conference-hotel-room'
+    > &
+      Schema.Attribute.Private;
+    maxOccupants: Schema.Attribute.Integer;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'name'>;
+    pics: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios',
+      true
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiConferenceHotelConferenceHotel
   extends Struct.CollectionTypeSchema {
   collectionName: 'conference_hotels';
@@ -527,6 +611,10 @@ export interface ApiConferenceHotelConferenceHotel
     conference: Schema.Attribute.Relation<
       'manyToOne',
       'api::conference.conference'
+    >;
+    conference_hotel_rooms: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::conference-hotel-room.conference-hotel-room'
     >;
     contactEmail: Schema.Attribute.Email;
     contactName: Schema.Attribute.String & Schema.Attribute.Required;
@@ -750,6 +838,10 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     conference_hotel: Schema.Attribute.Relation<
       'oneToOne',
       'api::conference-hotel.conference-hotel'
+    >;
+    conference_hotel_room_reservartions: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::conference-hotel-room-hold.conference-hotel-room-hold'
     >;
     confirmation: Schema.Attribute.String &
       Schema.Attribute.Required &
@@ -1351,6 +1443,8 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::conference-group.conference-group': ApiConferenceGroupConferenceGroup;
+      'api::conference-hotel-room-hold.conference-hotel-room-hold': ApiConferenceHotelRoomHoldConferenceHotelRoomHold;
+      'api::conference-hotel-room.conference-hotel-room': ApiConferenceHotelRoomConferenceHotelRoom;
       'api::conference-hotel.conference-hotel': ApiConferenceHotelConferenceHotel;
       'api::conference.conference': ApiConferenceConference;
       'api::hotel.hotel': ApiHotelHotel;

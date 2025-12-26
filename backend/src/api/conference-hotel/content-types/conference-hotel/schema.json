@@ -76,6 +76,12 @@
     "old_id": {
       "type": "string",
       "unique": true
+    },
+    "conference_hotel_rooms": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::conference-hotel-room.conference-hotel-room",
+      "mappedBy": "conference_hotel"
     }
   }
 }

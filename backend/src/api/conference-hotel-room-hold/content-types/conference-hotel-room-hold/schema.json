@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "conference_hotel_room_holds",
+  "info": {
+    "singularName": "conference-hotel-room-hold",
+    "pluralName": "conference-hotel-room-holds",
+    "displayName": "ConferenceHotelRoomReservartion"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "conference_hotel_room": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::conference-hotel-room.conference-hotel-room",
+      "inversedBy": "conference_hotel_room_reservartions"
+    },
+    "reservationStatus": {
+      "type": "enumeration",
+      "required": true,
+      "default": "hold",
+      "enum": [
+        "hold",
+        "ordered",
+        "confirmed",
+        "cancelled"
+      ]
+    },
+    "order": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::order.order",
+      "inversedBy": "conference_hotel_room_reservartions"
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "kind": "collectionType",
+  "collectionName": "conference_hotel_rooms",
+  "info": {
+    "singularName": "conference-hotel-room",
+    "pluralName": "conference-hotel-rooms",
+    "displayName": "ConferenceHotelRoom"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "conference_hotel": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::conference-hotel.conference-hotel",
+      "inversedBy": "conference_hotel_rooms"
+    },
+    "name": {
+      "type": "string",
+      "default": "name",
+      "required": true
+    },
+    "dailyRate": {
+      "type": "decimal",
+      "required": true
+    },
+    "blockTotal": {
+      "type": "integer",
+      "required": true
+    },
+    "pics": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "maxOccupants": {
+      "type": "integer"
+    },
+    "conference_hotel_room_reservartions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::conference-hotel-room-hold.conference-hotel-room-hold",
+      "mappedBy": "conference_hotel_room"
+    }
+  }
+}
