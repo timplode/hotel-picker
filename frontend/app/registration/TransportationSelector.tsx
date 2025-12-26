@@ -37,11 +37,10 @@ export default function TransportationSelector({ order, setOrderProp, conference
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-        Do you need transportation arrangements for the conference?
+       Please tell us about your transportation needs so we can better serve you picking a hotel.
       </Typography>
 
-      <Stack spacing={3}>
-          <Stack spacing={2}>
+      <Stack spacing={2}>
             <FormControlLabel
               control={
                 <Switch
@@ -62,7 +61,6 @@ export default function TransportationSelector({ order, setOrderProp, conference
               }
               label="I need transportation between the hotel and the conference"
             />
-          </Stack>
       </Stack>
     </Box>
   );

@@ -132,16 +132,16 @@ export default function Registration() {
         content: <BillingInformation order={order} setOrderProp={setOrderProp} />
     },
     {
-        label: 'Occupants & Rooms',
-        content: <RoomSelector order={order} setOrderProp={setOrderProp} conference={conference} />
-    },
-    {
         label: 'Transportation',
         content: <TransportationSelector order={order} setOrderProp={setOrderProp} conference={conference} />
     },
     {
         label: 'Hotel Selection',
         content: <HotelSelector order={order} setOrderProp={setOrderProp} conference={conference} />
+    },
+    {
+        label: 'Occupants & Rooms',
+        content: <RoomSelector order={order} setOrderProp={setOrderProp} conference={conference} />
     },
     {
         label: 'Hotel Paperwork',
