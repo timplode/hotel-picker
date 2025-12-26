@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Paper,
   Typography,
@@ -24,6 +25,7 @@ import { Conference } from '../../types/conference';
 type SortOrder = 'asc' | 'desc';
 
 export default function Conferences() {
+  const router = useRouter();
   const [conferences, setConferences] = useState<Conference[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -102,6 +104,10 @@ export default function Conferences() {
     return { label: 'Completed', color: 'default' as const };
   };
 
+  const handleConferenceClick = (conferenceId: string) => {
+    router.push(`/admin/conferences/${conferenceId}`);
+  };
+
   if (loading) {
     return (
       <Paper sx={{ p: 3, textAlign: 'center' }}>
@@ -169,7 +175,17 @@ export default function Conferences() {
             {conferences.map((conference) => {
               const status = getConferenceStatus(conference.defaultArrivalDate, conference.defaultDepartureDate);
               return (
-                <TableRow key={conference.documentId} hover>
+                <TableRow 
+                  key={conference.documentId} 
+                  hover
+                  sx={{ 
+                    cursor: 'pointer',
+                    '&:hover': {
+                      backgroundColor: 'action.hover'
+                    }
+                  }}
+                  onClick={() => handleConferenceClick(conference.documentId)}
+                >
                   <TableCell>
                     <Typography variant="body2" fontWeight="medium">
                       {conference.longName}
@@ -192,9 +208,13 @@ export default function Conferences() {
                       size="small"
                     />
                   </TableCell>
-                  <TableCell>
-                    <Button size="small" variant="outlined">
-                      Edit
+                  <TableCell onClick={(e) => e.stopPropagation()}>
+                    <Button 
+                      size="small" 
+                      variant="outlined"
+                      onClick={() => handleConferenceClick(conference.documentId)}
+                    >
+                      View Details
                     </Button>
                   </TableCell>
                 </TableRow>
