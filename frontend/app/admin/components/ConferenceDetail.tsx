@@ -31,12 +31,21 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  InputAdornment
+  InputAdornment,
+  Tabs,
+  Tab,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemButton,
+  Checkbox,
+  FormControlLabel
 } from '@mui/material';
 import { ExpandMore as ExpandMoreIcon, ExpandLess as ExpandLessIcon } from '@mui/icons-material';
 import { APIHOST } from '../../common';
 import { Conference } from '../../types/conference';
 import { ConferenceHotelRoom, ConferenceHotelRoomResponse } from '../../types/conferenceHotelRoom';
+import { Hotel } from '../../types/hotel';
 
 interface ConferenceDetailProps {
   conferenceId: string;
@@ -61,6 +70,23 @@ export default function ConferenceDetail({ conferenceId }: ConferenceDetailProps
   });
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState('');
+  const [showAddHotelDialog, setShowAddHotelDialog] = useState(false);
+  const [hotelDialogTab, setHotelDialogTab] = useState(0);
+  const [availableHotels, setAvailableHotels] = useState<Hotel[]>([]);
+  const [selectedHotels, setSelectedHotels] = useState<string[]>([]);
+  const [newHotelData, setNewHotelData] = useState({
+    name: '',
+    longName: '',
+    addressCity: '',
+    addressState: '',
+    addressZip: '',
+    website: '',
+    amenities: '',
+    contactName: '',
+    contactEmail: ''
+  });
+  const [hotelFormLoading, setHotelFormLoading] = useState(false);
+  const [hotelFormError, setHotelFormError] = useState('');
 
   useEffect(() => {
     if (conferenceId) {
@@ -160,6 +186,187 @@ export default function ConferenceDetail({ conferenceId }: ConferenceDetailProps
     } catch (err) {
       console.error('Error fetching conference hotels:', err);
     }
+  };
+
+  const fetchAvailableHotels = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      if (!token) return;
+
+      const response = await fetch(
+        `${APIHOST}/api/hotels?sort=longName:asc`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        const allHotels = data.data || [];
+        
+        // Filter out hotels already associated with this conference
+        const existingHotelIds = conferenceHotels.map(ch => ch.hotel.documentId);
+        const available = allHotels.filter(hotel => !existingHotelIds.includes(hotel.documentId));
+        setAvailableHotels(available);
+      }
+    } catch (err) {
+      console.error('Error fetching available hotels:', err);
+    }
+  };
+
+  const handleAddExistingHotels = async () => {
+    try {
+      setHotelFormLoading(true);
+      setHotelFormError('');
+
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      if (selectedHotels.length === 0) {
+        throw new Error('Please select at least one hotel');
+      }
+
+      // Create conference-hotel associations for each selected hotel
+      const promises = selectedHotels.map(hotelId => 
+        fetch(`${APIHOST}/api/conference-hotels`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            data: {
+              conference: conferenceId,
+              hotel: hotelId,
+              priority: 0
+            }
+          })
+        })
+      );
+
+      const responses = await Promise.all(promises);
+      const failedRequests = responses.filter(r => !r.ok);
+      
+      if (failedRequests.length > 0) {
+        throw new Error(`Failed to add ${failedRequests.length} hotel(s)`);
+      }
+
+      // Reset and refresh
+      setSelectedHotels([]);
+      setShowAddHotelDialog(false);
+      await Promise.all([fetchConferenceHotels(), fetchConferenceRooms()]);
+
+    } catch (err) {
+      setHotelFormError(err instanceof Error ? err.message : 'Failed to add hotels');
+    } finally {
+      setHotelFormLoading(false);
+    }
+  };
+
+  const handleCreateNewHotel = async () => {
+    try {
+      setHotelFormLoading(true);
+      setHotelFormError('');
+
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      if (!newHotelData.name || !newHotelData.longName) {
+        throw new Error('Hotel name and full name are required');
+      }
+
+      // First create the hotel
+      const hotelResponse = await fetch(`${APIHOST}/api/hotels`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          data: {
+            name: newHotelData.name,
+            longName: newHotelData.longName,
+            addressCity: newHotelData.addressCity || null,
+            addressState: newHotelData.addressState || null,
+            addressZip: newHotelData.addressZip || null,
+            website: newHotelData.website || null,
+            amenities: newHotelData.amenities || null,
+            contactName: newHotelData.contactName || null,
+            contactEmail: newHotelData.contactEmail || null
+          }
+        })
+      });
+
+      if (!hotelResponse.ok) {
+        throw new Error('Failed to create hotel');
+      }
+
+      const hotelData = await hotelResponse.json();
+
+      // Then associate it with the conference
+      const conferenceHotelResponse = await fetch(`${APIHOST}/api/conference-hotels`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          data: {
+            conference: conferenceId,
+            hotel: hotelData.data.documentId,
+            priority: 0
+          }
+        })
+      });
+
+      if (!conferenceHotelResponse.ok) {
+        throw new Error('Failed to associate hotel with conference');
+      }
+
+      // Reset and refresh
+      setNewHotelData({
+        name: '',
+        longName: '',
+        addressCity: '',
+        addressState: '',
+        addressZip: '',
+        website: '',
+        amenities: '',
+        contactName: '',
+        contactEmail: ''
+      });
+      setShowAddHotelDialog(false);
+      await Promise.all([fetchConferenceHotels(), fetchConferenceRooms()]);
+
+    } catch (err) {
+      setHotelFormError(err instanceof Error ? err.message : 'Failed to create hotel');
+    } finally {
+      setHotelFormLoading(false);
+    }
+  };
+
+  const handleCloseHotelDialog = () => {
+    setShowAddHotelDialog(false);
+    setHotelDialogTab(0);
+    setHotelFormError('');
+    setSelectedHotels([]);
+    setNewHotelData({
+      name: '',
+      longName: '',
+      addressCity: '',
+      addressState: '',
+      addressZip: '',
+      website: '',
+      amenities: '',
+      contactName: '',
+      contactEmail: ''
+    });
   };
 
   const handleFormSubmit = async () => {
@@ -499,6 +706,69 @@ export default function ConferenceDetail({ conferenceId }: ConferenceDetailProps
         )}
       </Grid>
 
+      {/* Conference Hotels Section */}
+      <Paper sx={{ p: 3, mt: 3 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Typography variant="h6">
+            Conference Hotels ({conferenceHotels.length})
+          </Typography>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => {
+              setShowAddHotelDialog(true);
+              fetchAvailableHotels();
+            }}
+          >
+            Manage Hotels
+          </Button>
+        </Box>
+
+        {conferenceHotels.length === 0 ? (
+          <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 3 }}>
+            No hotels associated with this conference
+          </Typography>
+        ) : (
+          <Grid container spacing={2}>
+            {conferenceHotels.map((conferenceHotel) => (
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={conferenceHotel.documentId}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      {conferenceHotel.hotel.longName}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" gutterBottom>
+                      {conferenceHotel.hotel.name}
+                    </Typography>
+                    
+                    {(conferenceHotel.hotel.addressCity || conferenceHotel.hotel.addressState) && (
+                      <Typography variant="body2" sx={{ mb: 1 }}>
+                        {[conferenceHotel.hotel.addressCity, conferenceHotel.hotel.addressState].filter(Boolean).join(', ')}
+                        {conferenceHotel.hotel.addressZip && ` ${conferenceHotel.hotel.addressZip}`}
+                      </Typography>
+                    )}
+                    
+                    {conferenceHotel.hotel.website && (
+                      <Typography variant="body2" sx={{ mb: 1 }}>
+                        <a href={conferenceHotel.hotel.website} target="_blank" rel="noopener noreferrer">
+                          Website
+                        </a>
+                      </Typography>
+                    )}
+                    
+                    {conferenceHotel.hotel.amenities && (
+                      <Typography variant="body2" color="text.secondary">
+                        {conferenceHotel.hotel.amenities}
+                      </Typography>
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        )}
+      </Paper>
+
       {/* Available Rooms Section */}
       <Paper sx={{ p: 3, mt: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -641,6 +911,190 @@ export default function ConferenceDetail({ conferenceId }: ConferenceDetailProps
           )}
        
       </Paper>
+
+      {/* Manage Hotels Dialog */}
+      <Dialog 
+        open={showAddHotelDialog} 
+        onClose={handleCloseHotelDialog}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>Manage Conference Hotels</DialogTitle>
+        <DialogContent>
+          {hotelFormError && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {hotelFormError}
+            </Alert>
+          )}
+          
+          <Tabs value={hotelDialogTab} onChange={(e, newValue) => setHotelDialogTab(newValue)} sx={{ mb: 3 }}>
+            <Tab label="Add Existing Hotels" />
+            <Tab label="Create New Hotel" />
+          </Tabs>
+
+          {hotelDialogTab === 0 && (
+            <Box>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                Select existing hotels to add to this conference:
+              </Typography>
+              
+              {availableHotels.length === 0 ? (
+                <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 3 }}>
+                  No available hotels found or all hotels are already associated with this conference
+                </Typography>
+              ) : (
+                <List sx={{ maxHeight: 400, overflow: 'auto' }}>
+                  {availableHotels.map((hotel) => (
+                    <ListItem key={hotel.documentId} disablePadding>
+                      <ListItemButton 
+                        onClick={() => {
+                          setSelectedHotels(prev => 
+                            prev.includes(hotel.documentId)
+                              ? prev.filter(id => id !== hotel.documentId)
+                              : [...prev, hotel.documentId]
+                          );
+                        }}
+                      >
+                        <Checkbox
+                          checked={selectedHotels.includes(hotel.documentId)}
+                          sx={{ mr: 2 }}
+                        />
+                        <ListItemText
+                          primary={hotel.longName}
+                          secondary={[
+                            hotel.addressCity,
+                            hotel.addressState
+                          ].filter(Boolean).join(', ')}
+                        />
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
+                </List>
+              )}
+            </Box>
+          )}
+
+          {hotelDialogTab === 1 && (
+            <Box sx={{ mt: 1 }}>
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <TextField
+                    label="Hotel Name (Short)"
+                    value={newHotelData.name}
+                    onChange={(e) => setNewHotelData(prev => ({ ...prev, name: e.target.value }))}
+                    fullWidth
+                    required
+                    placeholder="e.g., Marriott Downtown"
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <TextField
+                    label="Hotel Name (Full)"
+                    value={newHotelData.longName}
+                    onChange={(e) => setNewHotelData(prev => ({ ...prev, longName: e.target.value }))}
+                    fullWidth
+                    required
+                    placeholder="e.g., Downtown Marriott Hotel & Convention Center"
+                  />
+                </Grid>
+                
+                <Grid size={{ xs: 12, sm: 4 }}>
+                  <TextField
+                    label="City"
+                    value={newHotelData.addressCity}
+                    onChange={(e) => setNewHotelData(prev => ({ ...prev, addressCity: e.target.value }))}
+                    fullWidth
+                    placeholder="e.g., San Francisco"
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 4 }}>
+                  <TextField
+                    label="State"
+                    value={newHotelData.addressState}
+                    onChange={(e) => setNewHotelData(prev => ({ ...prev, addressState: e.target.value }))}
+                    fullWidth
+                    placeholder="e.g., CA"
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 4 }}>
+                  <TextField
+                    label="ZIP Code"
+                    value={newHotelData.addressZip}
+                    onChange={(e) => setNewHotelData(prev => ({ ...prev, addressZip: e.target.value }))}
+                    fullWidth
+                    placeholder="e.g., 94102"
+                  />
+                </Grid>
+                
+                <Grid size={{ xs: 12 }}>
+                  <TextField
+                    label="Website"
+                    value={newHotelData.website}
+                    onChange={(e) => setNewHotelData(prev => ({ ...prev, website: e.target.value }))}
+                    fullWidth
+                    placeholder="https://www.hotel-website.com"
+                  />
+                </Grid>
+                
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <TextField
+                    label="Contact Name"
+                    value={newHotelData.contactName}
+                    onChange={(e) => setNewHotelData(prev => ({ ...prev, contactName: e.target.value }))}
+                    fullWidth
+                    placeholder="e.g., John Smith"
+                  />
+                </Grid>
+                
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <TextField
+                    label="Contact Email"
+                    type="email"
+                    value={newHotelData.contactEmail}
+                    onChange={(e) => setNewHotelData(prev => ({ ...prev, contactEmail: e.target.value }))}
+                    fullWidth
+                    placeholder="contact@hotel.com"
+                  />
+                </Grid>
+                
+                <Grid size={{ xs: 12 }}>
+                  <TextField
+                    label="Amenities"
+                    value={newHotelData.amenities}
+                    onChange={(e) => setNewHotelData(prev => ({ ...prev, amenities: e.target.value }))}
+                    fullWidth
+                    multiline
+                    rows={3}
+                    placeholder="e.g., Pool, Fitness Center, Business Center, Free WiFi"
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseHotelDialog} disabled={hotelFormLoading}>
+            Cancel
+          </Button>
+          {hotelDialogTab === 0 ? (
+            <Button 
+              onClick={handleAddExistingHotels} 
+              variant="contained" 
+              disabled={hotelFormLoading || selectedHotels.length === 0}
+            >
+              {hotelFormLoading ? <CircularProgress size={20} /> : `Add Selected Hotels (${selectedHotels.length})`}
+            </Button>
+          ) : (
+            <Button 
+              onClick={handleCreateNewHotel} 
+              variant="contained" 
+              disabled={hotelFormLoading || !newHotelData.name || !newHotelData.longName}
+            >
+              {hotelFormLoading ? <CircularProgress size={20} /> : 'Create & Add Hotel'}
+            </Button>
+          )}
+        </DialogActions>
+      </Dialog>
 
       {/* Add Room Dialog */}
       <Dialog 

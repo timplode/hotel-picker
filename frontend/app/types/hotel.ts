@@ -9,6 +9,8 @@ export interface Hotel {
   addressZip?: string;
   website?: string;
   amenities?: string;
+  contactName?: string;
+  contactEmail?: string;
   conference?: {
     documentId: string;
     name: string;

@@ -636,7 +636,7 @@ export interface ApiConferenceHotelConferenceHotel
       'api::conference-hotel.conference-hotel'
     > &
       Schema.Attribute.Private;
-    name: Schema.Attribute.String & Schema.Attribute.Required;
+    name: Schema.Attribute.String;
     old_id: Schema.Attribute.String & Schema.Attribute.Unique;
     priority: Schema.Attribute.Integer;
     publishedAt: Schema.Attribute.DateTime;
