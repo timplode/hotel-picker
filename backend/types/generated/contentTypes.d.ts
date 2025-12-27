@@ -589,7 +589,20 @@ export interface ApiConferenceHotelRoomConferenceHotelRoom
       'images' | 'files' | 'videos' | 'audios',
       true
     >;
+    priority: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 100;
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<1>;
     publishedAt: Schema.Attribute.DateTime;
+    reservedTotal: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<0>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -617,7 +630,7 @@ export interface ApiConferenceHotelConferenceHotel
       'api::conference-hotel-room.conference-hotel-room'
     >;
     contactEmail: Schema.Attribute.Email;
-    contactName: Schema.Attribute.String & Schema.Attribute.Required;
+    contactName: Schema.Attribute.String;
     contactPhone: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -643,7 +656,9 @@ export interface ApiConferenceHotelConferenceHotel
     requiresCreditCard: Schema.Attribute.Boolean &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<true>;
-    taxPerRoomNight: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    taxPerRoomNight: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<0>;
     taxPerRoomNightNonProfit: Schema.Attribute.Decimal &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<0>;

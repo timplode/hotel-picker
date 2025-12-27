@@ -32,7 +32,7 @@
     },
     "contactName": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "contactPhone": {
       "type": "string"
@@ -60,7 +60,8 @@
     },
     "taxPerRoomNight": {
       "type": "decimal",
-      "required": true
+      "required": true,
+      "default": 0
     },
     "taxPerRoomNightNonProfit": {
       "type": "decimal",

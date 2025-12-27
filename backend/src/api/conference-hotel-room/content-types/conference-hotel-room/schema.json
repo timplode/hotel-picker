@@ -48,6 +48,18 @@
       "relation": "oneToMany",
       "target": "api::conference-hotel-room-hold.conference-hotel-room-hold",
       "mappedBy": "conference_hotel_room"
+    },
+    "reservedTotal": {
+      "type": "integer",
+      "required": true,
+      "default": 0
+    },
+    "priority": {
+      "type": "integer",
+      "required": true,
+      "default": 1,
+      "min": 0,
+      "max": 100
     }
   }
 }

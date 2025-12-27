@@ -4,6 +4,7 @@ export interface ConferenceHotelRoom {
   name: string;
   dailyRate: number;
   blockTotal: number;
+  reservedTotal?: number;
   maxOccupants?: number;
   pics?: Array<{
     id: number;

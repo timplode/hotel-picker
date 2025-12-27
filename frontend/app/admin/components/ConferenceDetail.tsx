@@ -724,22 +724,52 @@ export default function ConferenceDetail({ conferenceId }: ConferenceDetailProps
           </Button>
         </Box>
 
+        {roomsLoading && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+            <CircularProgress size={24} />
+            <Typography variant="body2" sx={{ ml: 2 }}>
+              Loading rooms...
+            </Typography>
+          </Box>
+        )}
+
+        {roomsError && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {roomsError}
+          </Alert>
+        )}
+
         {conferenceHotels.length === 0 ? (
           <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 3 }}>
             No hotels associated with this conference
           </Typography>
         ) : (
-          <Grid container spacing={2}>
-            {conferenceHotels.map((conferenceHotel) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={conferenceHotel.documentId}>
-                <Card>
+          <Box>
+            {conferenceHotels.map((conferenceHotel) => {
+              // Get rooms for this specific hotel
+              const hotelRooms = rooms.filter(room => 
+                room.conference_hotel?.documentId === conferenceHotel.documentId
+              );
+
+              return (
+                <Card key={conferenceHotel.documentId} sx={{ mb: 3 }}>
                   <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      {conferenceHotel.hotel.longName}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
-                      {conferenceHotel.hotel.name}
-                    </Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                      <Box>
+                        <Typography variant="h6" gutterBottom>
+                          {conferenceHotel.hotel.longName}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                          {conferenceHotel.hotel.name}
+                        </Typography>
+                      </Box>
+                      <Chip 
+                        label={`Priority ${conferenceHotel.priority || 0}`}
+                        size="small"
+                        color="primary"
+                        variant="outlined"
+                      />
+                    </Box>
                     
                     {(conferenceHotel.hotel.addressCity || conferenceHotel.hotel.addressState) && (
                       <Typography variant="body2" sx={{ mb: 1 }}>
@@ -747,169 +777,121 @@ export default function ConferenceDetail({ conferenceId }: ConferenceDetailProps
                         {conferenceHotel.hotel.addressZip && ` ${conferenceHotel.hotel.addressZip}`}
                       </Typography>
                     )}
+
+                    {/* Hotel Rooms Section */}
+                    <Divider sx={{ my: 2 }} />
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                      <Typography variant="h6" sx={{ color: 'primary.main' }}>
+                        Available Rooms ({hotelRooms.length})
+                      </Typography>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        onClick={() => {
+                          // Pre-select this hotel in the form
+                          setFormData(prev => ({ ...prev, conference_hotel: conferenceHotel.documentId }));
+                          setShowAddRoomDialog(true);
+                        }}
+                      >
+                        Add Room
+                      </Button>
+                    </Box>
                     
-                    {conferenceHotel.hotel.website && (
-                      <Typography variant="body2" sx={{ mb: 1 }}>
-                        <a href={conferenceHotel.hotel.website} target="_blank" rel="noopener noreferrer">
-                          Website
-                        </a>
+                    {!roomsLoading && hotelRooms.length === 0 && (
+                      <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                        No rooms available for this hotel
                       </Typography>
                     )}
                     
-                    {conferenceHotel.hotel.amenities && (
-                      <Typography variant="body2" color="text.secondary">
-                        {conferenceHotel.hotel.amenities}
-                      </Typography>
+                    {hotelRooms.length > 0 && (
+                      <TableContainer>
+                        <Table size="small">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell><strong>Room Name</strong></TableCell>
+                              <TableCell align="right"><strong>Daily Rate</strong></TableCell>
+                              <TableCell align="center"><strong>Allocated</strong></TableCell>
+                              <TableCell align="center"><strong>Reserved</strong></TableCell>
+                              <TableCell align="center"><strong>Max Occupants</strong></TableCell>
+                              <TableCell align="center"><strong>Images</strong></TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {hotelRooms.map((room) => (
+                              <TableRow key={room.documentId} hover>
+                                <TableCell>
+                                  <Typography variant="body2">
+                                    {room.name}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right">
+                                  <Typography variant="body2" fontWeight="medium" color="success.main">
+                                    {formatCurrency(room.dailyRate)}
+                                  </Typography>
+                                  <Typography variant="caption" color="text.secondary">
+                                    per night
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                  <Chip 
+                                    label={room.blockTotal}
+                                    size="small"
+                                    color="primary"
+                                    variant="outlined"
+                                  />
+                                </TableCell>
+                                <TableCell align="center">
+                                  <Chip 
+                                    label={room.reservedTotal || 0}
+                                    size="small"
+                                    color="secondary"
+                                    variant="outlined"
+                                  />
+                                </TableCell>
+                                <TableCell align="center">
+                                  <Typography variant="body2">
+                                    {room.maxOccupants || 'N/A'}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                  {room.pics && room.pics.length > 0 ? (
+                                    <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center' }}>
+                                      {room.pics.slice(0, 3).map((pic, index) => (
+                                        <Avatar
+                                          key={pic.id}
+                                          src={pic.url}
+                                          alt={pic.alternativeText || room.name}
+                                          sx={{ width: 32, height: 32 }}
+                                          variant="rounded"
+                                        />
+                                      ))}
+                                      {room.pics.length > 3 && (
+                                        <Chip
+                                          label={`+${room.pics.length - 3}`}
+                                          size="small"
+                                          sx={{ height: 32, fontSize: '0.7rem' }}
+                                        />
+                                      )}
+                                    </Box>
+                                  ) : (
+                                    <Typography variant="body2" color="text.secondary">
+                                      No images
+                                    </Typography>
+                                  )}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
                     )}
                   </CardContent>
                 </Card>
-              </Grid>
-            ))}
-          </Grid>
-        )}
-      </Paper>
-
-      {/* Available Rooms Section */}
-      <Paper sx={{ p: 3, mt: 3 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Typography variant="h6">
-            Available Hotel Rooms ({rooms.length})
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              onClick={() => setShowAddRoomDialog(true)}
-              disabled={conferenceHotels.length === 0}
-            >
-              Add Hotel Room
-            </Button>
+              );
+            })}
           </Box>
-        </Box>
-
-        
-          {roomsLoading && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-              <CircularProgress size={24} />
-              <Typography variant="body2" sx={{ ml: 2 }}>
-                Loading rooms...
-              </Typography>
-            </Box>
-          )}
-
-          {roomsError && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {roomsError}
-            </Alert>
-          )}
-
-          {!roomsLoading && !roomsError && rooms.length === 0 && (
-            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 3 }}>
-              No rooms found for this conference
-            </Typography>
-          )}
-
-          {!roomsLoading && !roomsError && rooms.length > 0 && (
-            <Box>
-              {(() => {
-                // Group rooms by hotel
-                const roomsByHotel = rooms.reduce((acc, room) => {
-                  const hotelKey = room.conference_hotel?.documentId || 'unknown';
-                  const hotelName = room.conference_hotel?.hotel?.longName || room.conference_hotel?.hotel?.name || 'Unknown Hotel';
-                  
-                  if (!acc[hotelKey]) {
-                    acc[hotelKey] = {
-                      name: hotelName,
-                      rooms: []
-                    };
-                  }
-                  acc[hotelKey].rooms.push(room);
-                  return acc;
-                }, {} as Record<string, { name: string; rooms: ConferenceHotelRoom[] }>);
-
-                return Object.entries(roomsByHotel).map(([hotelKey, hotelGroup]) => (
-                  <Box key={hotelKey} sx={{ mb: 4 }}>
-                    <Typography variant="h6" sx={{ mb: 2, color: 'primary.main', borderBottom: 1, borderColor: 'divider', pb: 1 }}>
-                      {hotelGroup.name} ({hotelGroup.rooms.length} rooms)
-                    </Typography>
-                    <TableContainer>
-                      <Table size="small">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell><strong>Room Name</strong></TableCell>
-                            <TableCell align="right"><strong>Daily Rate</strong></TableCell>
-                            <TableCell align="center"><strong>Block Total</strong></TableCell>
-                            <TableCell align="center"><strong>Max Occupants</strong></TableCell>
-                            <TableCell align="center"><strong>Images</strong></TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {hotelGroup.rooms.map((room) => (
-                            <TableRow key={room.documentId} hover>
-                              <TableCell>
-                                <Typography variant="body2">
-                                  {room.name}
-                                </Typography>
-                              </TableCell>
-                              <TableCell align="right">
-                                <Typography variant="body2" fontWeight="medium" color="success.main">
-                                  {formatCurrency(room.dailyRate)}
-                                </Typography>
-                                <Typography variant="caption" color="text.secondary">
-                                  per night
-                                </Typography>
-                              </TableCell>
-                              <TableCell align="center">
-                                <Chip 
-                                  label={room.blockTotal}
-                                  size="small"
-                                  color="primary"
-                                  variant="outlined"
-                                />
-                              </TableCell>
-                              <TableCell align="center">
-                                <Typography variant="body2">
-                                  {room.maxOccupants || 'N/A'}
-                                </Typography>
-                              </TableCell>
-                              <TableCell align="center">
-                                {room.pics && room.pics.length > 0 ? (
-                                  <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center' }}>
-                                    {room.pics.slice(0, 3).map((pic, index) => (
-                                      <Avatar
-                                        key={pic.id}
-                                        src={pic.url}
-                                        alt={pic.alternativeText || room.name}
-                                        sx={{ width: 32, height: 32 }}
-                                        variant="rounded"
-                                      />
-                                    ))}
-                                    {room.pics.length > 3 && (
-                                      <Chip
-                                        label={`+${room.pics.length - 3}`}
-                                        size="small"
-                                        sx={{ height: 32, fontSize: '0.7rem' }}
-                                      />
-                                    )}
-                                  </Box>
-                                ) : (
-                                  <Typography variant="body2" color="text.secondary">
-                                    No images
-                                  </Typography>
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Box>
-                ));
-              })()}
-            </Box>
-          )}
-       
+        )}
       </Paper>
 
       {/* Manage Hotels Dialog */}
