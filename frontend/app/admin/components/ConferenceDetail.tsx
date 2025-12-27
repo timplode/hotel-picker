@@ -752,15 +752,12 @@ export default function ConferenceDetail({ conferenceId }: ConferenceDetailProps
               );
 
               return (
-                <Card key={conferenceHotel.documentId} sx={{ mb: 3 }}>
+                <Card key={conferenceHotel.documentId} sx={{ m: 3 }}>
                   <CardContent>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
                       <Box>
                         <Typography variant="h6" gutterBottom>
                           {conferenceHotel.hotel.longName}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
-                          {conferenceHotel.hotel.name}
                         </Typography>
                       </Box>
                       <Chip 
@@ -770,16 +767,9 @@ export default function ConferenceDetail({ conferenceId }: ConferenceDetailProps
                         variant="outlined"
                       />
                     </Box>
-                    
-                    {(conferenceHotel.hotel.addressCity || conferenceHotel.hotel.addressState) && (
-                      <Typography variant="body2" sx={{ mb: 1 }}>
-                        {[conferenceHotel.hotel.addressCity, conferenceHotel.hotel.addressState].filter(Boolean).join(', ')}
-                        {conferenceHotel.hotel.addressZip && ` ${conferenceHotel.hotel.addressZip}`}
-                      </Typography>
-                    )}
 
                     {/* Hotel Rooms Section */}
-                    <Divider sx={{ my: 2 }} />
+                   
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                       <Typography variant="h6" sx={{ color: 'primary.main' }}>
                         Available Rooms ({hotelRooms.length})
@@ -794,7 +784,7 @@ export default function ConferenceDetail({ conferenceId }: ConferenceDetailProps
                           setShowAddRoomDialog(true);
                         }}
                       >
-                        Add Room
+                        Add Room Type
                       </Button>
                     </Box>
                     
