@@ -636,6 +636,7 @@ export interface ApiConferenceHotelConferenceHotel
       'api::conference-hotel.conference-hotel'
     > &
       Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
     old_id: Schema.Attribute.String & Schema.Attribute.Unique;
     priority: Schema.Attribute.Integer;
     publishedAt: Schema.Attribute.DateTime;
@@ -1386,7 +1387,6 @@ export interface PluginUsersPermissionsUser
   };
   options: {
     draftAndPublish: false;
-    timestamps: true;
   };
   attributes: {
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
@@ -1427,6 +1427,9 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 3;
       }>;
+    userType: Schema.Attribute.Enumeration<['user', 'admin']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'user'>;
   };
 }
 

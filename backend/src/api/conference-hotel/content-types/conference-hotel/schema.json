@@ -11,6 +11,10 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
     "conference": {
       "type": "relation",
       "relation": "manyToOne",
