@@ -87,6 +87,17 @@ export default function ConferenceDetail({ conferenceId }: ConferenceDetailProps
   });
   const [hotelFormLoading, setHotelFormLoading] = useState(false);
   const [hotelFormError, setHotelFormError] = useState('');
+  const [showEditConferenceDialog, setShowEditConferenceDialog] = useState(false);
+  const [editConferenceData, setEditConferenceData] = useState({
+    name: '',
+    longName: '',
+    defaultArrivalDate: '',
+    defaultDepartureDate: '',
+    earliestArrivalDate: '',
+    passcode: ''
+  });
+  const [editConferenceLoading, setEditConferenceLoading] = useState(false);
+  const [editConferenceError, setEditConferenceError] = useState('');
 
   useEffect(() => {
     if (conferenceId) {
@@ -369,6 +380,96 @@ export default function ConferenceDetail({ conferenceId }: ConferenceDetailProps
     });
   };
 
+  const handleEditConference = () => {
+    // Pre-populate form with current conference data
+    setEditConferenceData({
+      name: conference?.name || '',
+      longName: conference?.longName || '',
+      defaultArrivalDate: conference?.defaultArrivalDate || '',
+      defaultDepartureDate: conference?.defaultDepartureDate || '',
+      earliestArrivalDate: conference?.earliestArrivalDate || '',
+      passcode: conference?.passcode || ''
+    });
+    setShowEditConferenceDialog(true);
+  };
+
+  const handleUpdateConference = async () => {
+    try {
+      setEditConferenceLoading(true);
+      setEditConferenceError('');
+
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      // Validate required fields
+      if (!editConferenceData.name || !editConferenceData.longName || 
+          !editConferenceData.defaultArrivalDate || !editConferenceData.defaultDepartureDate ||
+          !editConferenceData.earliestArrivalDate) {
+        throw new Error('Please fill in all required fields');
+      }
+
+      // Validate dates
+      const earliestArrival = new Date(editConferenceData.earliestArrivalDate);
+      const defaultArrival = new Date(editConferenceData.defaultArrivalDate);
+      const defaultDeparture = new Date(editConferenceData.defaultDepartureDate);
+
+      if (earliestArrival > defaultArrival) {
+        throw new Error('Earliest arrival date must be before default arrival date');
+      }
+
+      if (defaultArrival >= defaultDeparture) {
+        throw new Error('Default departure date must be after default arrival date');
+      }
+
+      const response = await fetch(`${APIHOST}/api/conferences/${conferenceId}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          data: {
+            name: editConferenceData.name,
+            longName: editConferenceData.longName,
+            defaultArrivalDate: editConferenceData.defaultArrivalDate,
+            defaultDepartureDate: editConferenceData.defaultDepartureDate,
+            earliestArrivalDate: editConferenceData.earliestArrivalDate,
+            passcode: editConferenceData.passcode || undefined
+          }
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || 'Failed to update conference');
+      }
+
+      // Close dialog and refresh conference data
+      setShowEditConferenceDialog(false);
+      await fetchConference();
+
+    } catch (err) {
+      setEditConferenceError(err instanceof Error ? err.message : 'Failed to update conference');
+    } finally {
+      setEditConferenceLoading(false);
+    }
+  };
+
+  const handleCloseEditConferenceDialog = () => {
+    setShowEditConferenceDialog(false);
+    setEditConferenceError('');
+    setEditConferenceData({
+      name: '',
+      longName: '',
+      defaultArrivalDate: '',
+      defaultDepartureDate: '',
+      earliestArrivalDate: '',
+      passcode: ''
+    });
+  };
+
   const handleFormSubmit = async () => {
     try {
       setFormLoading(true);
@@ -445,7 +546,7 @@ export default function ConferenceDetail({ conferenceId }: ConferenceDetailProps
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString+`T00:00:00`).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -545,9 +646,18 @@ export default function ConferenceDetail({ conferenceId }: ConferenceDetailProps
         <Grid size={{ xs: 12, md: 6 }}>
           <Card>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Conference Details
-              </Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h6">
+                  Conference Details
+                </Typography>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={handleEditConference}
+                >
+                  Edit
+                </Button>
+              </Box>
               <Divider sx={{ mb: 2 }} />
               
               <Box sx={{ mb: 2 }}>
@@ -710,7 +820,7 @@ export default function ConferenceDetail({ conferenceId }: ConferenceDetailProps
       <Paper sx={{ p: 3, mt: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h6">
-            Conference Hotels ({conferenceHotels.length})
+            Rooms for this Conference
           </Typography>
           <Button
             variant="contained"
@@ -1065,6 +1175,120 @@ export default function ConferenceDetail({ conferenceId }: ConferenceDetailProps
               {hotelFormLoading ? <CircularProgress size={20} /> : 'Create & Add Hotel'}
             </Button>
           )}
+        </DialogActions>
+      </Dialog>
+
+      {/* Edit Conference Dialog */}
+      <Dialog 
+        open={showEditConferenceDialog} 
+        onClose={handleCloseEditConferenceDialog}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>Edit Conference Details</DialogTitle>
+        <DialogContent>
+          {editConferenceError && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {editConferenceError}
+            </Alert>
+          )}
+          
+          <Box sx={{ mt: 1 }}>
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  label="Conference Name (Short)"
+                  value={editConferenceData.name}
+                  onChange={(e) => setEditConferenceData(prev => ({ ...prev, name: e.target.value }))}
+                  fullWidth
+                  required
+                  placeholder="e.g., CONF2025"
+                  helperText="Short identifier for the conference"
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  label="Conference Name (Full)"
+                  value={editConferenceData.longName}
+                  onChange={(e) => setEditConferenceData(prev => ({ ...prev, longName: e.target.value }))}
+                  fullWidth
+                  required
+                  placeholder="e.g., Annual Technology Conference 2025"
+                  helperText="Full display name"
+                />
+              </Grid>
+              
+              <Grid size={{ xs: 12, sm: 4 }}>
+                <TextField
+                  label="Earliest Arrival Date"
+                  type="date"
+                  value={editConferenceData.earliestArrivalDate}
+                  onChange={(e) => setEditConferenceData(prev => ({ ...prev, earliestArrivalDate: e.target.value }))}
+                  fullWidth
+                  required
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  helperText="Earliest date attendees can arrive"
+                />
+              </Grid>
+              
+              <Grid size={{ xs: 12, sm: 4 }}>
+                <TextField
+                  label="Default Arrival Date"
+                  type="date"
+                  value={editConferenceData.defaultArrivalDate}
+                  onChange={(e) => setEditConferenceData(prev => ({ ...prev, defaultArrivalDate: e.target.value }))}
+                  fullWidth
+                  required
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  helperText="Conference start date"
+                />
+              </Grid>
+              
+              <Grid size={{ xs: 12, sm: 4 }}>
+                <TextField
+                  label="Default Departure Date"
+                  type="date"
+                  value={editConferenceData.defaultDepartureDate}
+                  onChange={(e) => setEditConferenceData(prev => ({ ...prev, defaultDepartureDate: e.target.value }))}
+                  fullWidth
+                  required
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  helperText="Conference end date"
+                />
+              </Grid>
+              
+              <Grid size={{ xs: 12 }}>
+                <TextField
+                  label="Access Passcode"
+                  value={editConferenceData.passcode}
+                  onChange={(e) => setEditConferenceData(prev => ({ ...prev, passcode: e.target.value }))}
+                  fullWidth
+                  placeholder="Optional passcode for registration"
+                  helperText="Leave empty if no passcode required"
+                />
+              </Grid>
+            </Grid>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseEditConferenceDialog} disabled={editConferenceLoading}>
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleUpdateConference} 
+            variant="contained" 
+            disabled={editConferenceLoading || !editConferenceData.name || !editConferenceData.longName || 
+                     !editConferenceData.defaultArrivalDate || !editConferenceData.defaultDepartureDate || 
+                     !editConferenceData.earliestArrivalDate}
+          >
+            {editConferenceLoading ? <CircularProgress size={20} /> : 'Update Conference'}
+          </Button>
         </DialogActions>
       </Dialog>
 
